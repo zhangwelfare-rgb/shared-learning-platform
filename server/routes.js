@@ -102,7 +102,7 @@ route('GET', '/api/auth/me', (req, res) => {
 
 // ---------- 元数据 ----------
 route('GET', '/api/meta', (req, res) => {
-  const subjects = ['语文', '数学', '英语', '物理', '化学', '生物', '历史', '地理', '政治'];
+  const subjects = ['语文', '数学', '英语', '物理', '化学', '生物', '历史', '地理', '道德与法治', '科学'];
   return ok(res, { subjects, packages: config.PURCHASE_PACKAGES, exchangeRate: config.EXCHANGE_RATE, gradeLabel, levelLabel });
 });
 
@@ -116,7 +116,7 @@ route('GET', '/api/knowledge', (req, res, p, url) => {
   if (grade) { where.push('grade_level=?'); params.push(Number(grade)); }
   if (q) { where.push('(topic LIKE ? OR explanation LIKE ?)'); params.push(`%${q}%`, `%${q}%`); }
   const sql = `SELECT kp.*, (SELECT COUNT(*) FROM approaches a WHERE a.kp_id=kp.id) AS approach_count
-    FROM knowledge_points kp ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY kp.id DESC LIMIT 500`;
+    FROM knowledge_points kp ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY kp.id DESC LIMIT 2000`;
   const rows = db.prepare(sql).all(...params);
   return ok(res, { items: rows.map(r => ({ ...r, gradeLabel: gradeLabel(r.grade_level) })) });
 });

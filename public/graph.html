@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>智学论坛 · 学科知识图谱</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: #1f2937; background: #f7f9fc; }
+  header.topbar { display: flex; align-items: center; gap: 14px; padding: 10px 18px; background: #fff; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }
+  .brand { font-weight: 800; font-size: 18px; color: #2563eb; }
+  .brand span { font-size: 12px; color: #94a3b8; font-weight: 500; margin-left: 4px; }
+  .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
+  select, input, button { font-size: 14px; border: 1px solid #d1d5db; border-radius: 8px; padding: 6px 10px; background: #fff; color: #1f2937; }
+  input[type=text] { width: 180px; }
+  .seg { display: inline-flex; border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden; }
+  .seg button { border: none; border-radius: 0; border-right: 1px solid #e5e7eb; padding: 6px 12px; cursor: pointer; }
+  .seg button:last-child { border-right: none; }
+  .seg button.on { background: #2563eb; color: #fff; }
+  .wrap { display: flex; height: calc(100% - 56px); }
+  #stage { flex: 1; position: relative; overflow: hidden; background: radial-gradient(circle at 50% 40%, #ffffff, #eef2f7); }
+  svg { width: 100%; height: 100%; display: block; cursor: grab; }
+  svg.grabbing { cursor: grabbing; }
+  .panel { width: 340px; background: #fff; border-left: 1px solid #e5e7eb; padding: 16px; overflow-y: auto; }
+  .panel h2 { margin: 0 0 6px; font-size: 17px; }
+  .tag { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; margin: 2px 4px 2px 0; }
+  .panel .sec { margin-top: 14px; }
+  .panel .sec b { color: #2563eb; }
+  .panel pre { white-space: pre-wrap; font-family: inherit; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 8px; padding: 10px; font-size: 13px; line-height: 1.6; margin: 6px 0 0; }
+  .legend { position: absolute; left: 12px; bottom: 12px; background: rgba(255,255,255,.92); border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px 12px; font-size: 12px; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; vertical-align: -2px; }
+  .hint { position: absolute; right: 12px; top: 12px; background: rgba(255,255,255,.92); border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px 12px; font-size: 12px; color: #64748b; }
+  .stat { font-size: 12px; color: #64748b; }
+  .node-label { font-size: 11px; fill: #334155; pointer-events: none; user-select: none; }
+  .node-label.sm { font-size: 10px; fill: #64748b; }
+  .dim { opacity: .12 !important; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand" onclick="location.href='/'">📚 智学论坛 <span>学科知识图谱</span></div>
+  <div class="controls">
+    <label>学科
+      <select id="subjectSel"></select>
+    </label>
+    <div class="seg" id="stageSeg">
+      <button data-s="all" class="on">全部</button>
+      <button data-s="小学">小学</button>
+      <button data-s="初中">初中</button>
+      <button data-s="高中">高中</button>
+    </div>
+    <input id="search" type="text" placeholder="搜索考点/主题…" />
+    <button id="fitBtn">适应视图</button>
+  </div>
+</header>
+<div class="wrap">
+  <div id="stage">
+    <svg id="svg" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="legend">
+      <div><i style="background:#ef4444"></i>学科</div>
+      <div><i style="background:#10b981"></i>小学</div>
+      <div><i style="background:#3b82f6"></i>初中</div>
+      <div><i style="background:#8b5cf6"></i>高中</div>
+    </div>
+    <div class="hint">滚轮缩放 · 拖拽空白平移 · 拖拽节点重排 · 点击查看应知应会</div>
+  </div>
+  <div class="panel" id="panel">
+    <h2>学科知识图谱</h2>
+    <div class="stat" id="stat"></div>
+    <div class="sec"><b>使用说明</b><pre>1. 选择上方学科，图谱会把该学科小初高全部考点集合进来。
+2. 结构：学科 → 学段(小学/初中/高中) → 学习主题 → 具体考点。
+3. 点击任意「考点」节点，右侧显示应知应会、典型例题与考点。
+4. 用学段筛选或搜索框快速定位考点。</pre></div>
+  </div>
+</div>
+
+<script>
+const SVG = document.getElementById('svg');
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const COLORS = { 'root':'#ef4444', '小学':'#10b981', '初中':'#3b82f6', '高中':'#8b5cf6' };
+const STAGE = { 小学:[330,260], 初中:[700,650], 高中:[1070,260] };
+const VB = { w:1400, h:900 };
+
+let G = null; // graph state
+
+function gradeToStage(g){ return g<=6 ? '小学' : g<=9 ? '初中' : '高中'; }
+
+async function loadSubjects(){
+  const r = await fetch('/api/meta'); const m = await r.json();
+  const sel = document.getElementById('subjectSel');
+  sel.innerHTML = m.subjects.map(s=>`<option>${s}</option>`).join('');
+  sel.onchange = ()=> buildGraph(sel.value);
+  if (m.subjects.length) buildGraph(m.subjects[0]);
+}
+
+async function buildGraph(subject){
+  const r = await fetch('/api/knowledge?subject='+encodeURIComponent(subject)+'&limit=2000');
+  const j = await r.json();
+  const items = j.items.filter(x=>x.source==='curriculum');
+
+  const nodes = [], edges = [], byId = {};
+  const add = (n)=>{ nodes.push(n); byId[n.id]=n; return n; };
+
+  const root = add({ id:'ROOT', label:subject, type:'root', stage:null, color:COLORS.root, r:32, anchor:[700,450], data:null });
+  const stageNodes = {};
+  ['小学','初中','高中'].forEach(s=>{
+    stageNodes[s] = add({ id:'ST_'+s, label:s, type:'stage', stage:s, color:COLORS[s], r:24, anchor:STAGE[s], data:null });
+    edges.push({ s:'ROOT', t:'ST_'+s });
+  });
+
+  const unitMap = {};
+  let idx=0;
+  // 按学段把 unit 分组，给 unit 一个围绕学段锚点的位置
+  const stageUnitCount = { '小学':0,'初中':0,'高中':0 };
+  const stageUnits = { '小学':[],'初中':[],'高中':[] };
+  items.forEach(it=>{
+    const st = gradeToStage(it.grade_level);
+    const key = st+'|'+it.unit;
+    if (!unitMap[key]){
+      const base = STAGE[st];
+      const ang = (stageUnits[st].length * 137.5) * Math.PI/180;
+      const rad = 150;
+      const ax = base[0] + Math.cos(ang)*rad, ay = base[1] + Math.sin(ang)*rad;
+      const u = add({ id:'U_'+key, label:it.unit, type:'unit', stage:st, color:COLORS[st], r:15, anchor:[ax,ay], data:null });
+      edges.push({ s:'ST_'+st, t:u.id });
+      unitMap[key]=u; stageUnits[st].push(u);
+    }
+    const u = unitMap[key];
+    const kp = add({ id:'KP_'+it.id, label:it.topic, type:'kp', stage:st, color:COLORS[st], r:9,
+      anchor:[ u.anchor[0] + (Math.random()-0.5)*120, u.anchor[1] + (Math.random()-0.5)*120 ], data:it });
+    edges.push({ s:u.id, t:kp.id });
+    idx++;
+  });
+
+  // adjacency
+  const adj = {}; nodes.forEach(n=> adj[n.id]=new Set());
+  edges.forEach(e=>{ adj[e.s].add(e.t); adj[e.t].add(e.s); });
+
+  // visible flag
+  nodes.forEach(n=> n.visible = true);
+
+  G = { subject, nodes, edges, byId, adj, stageNodes,
+        view:{x:0,y:0,w:VB.w,h:VB.h}, scale:1, dragNode:null, dragBG:null, search:'', stageFilter:'all', selected:null };
+
+  // init positions near anchors + jitter
+  nodes.forEach(n=>{ n.x=n.anchor[0]+(Math.random()-0.5)*30; n.y=n.anchor[1]+(Math.random()-0.5)*30; n.vx=0; n.vy=0; });
+
+  buildSVG();
+  document.getElementById('stat').textContent =
+    `共 ${items.length} 个考点 · 小学 ${stageUnits['小学'].length?items.filter(i=>gradeToStage(i.grade_level)==='小学').length:0} / 初中 ${items.filter(i=>gradeToStage(i.grade_level)==='初中').length} / 高中 ${items.filter(i=>gradeToStage(i.grade_level)==='高中').length}`;
+  showRoot(subject, items.length);
+  applyFilter();
+  loop();
+}
+
+// ---------- SVG build ----------
+function buildSVG(){
+  while (SVG.firstChild) SVG.removeChild(SVG.firstChild);
+  G.edgeEls = G.edges.map(e=>{
+    const l = document.createElementNS(SVG_NS,'line');
+    l.setAttribute('stroke','#cbd5e1'); l.setAttribute('stroke-width','1');
+    SVG.appendChild(l); return l;
+  });
+  G.nodeEls = {};
+  G.nodes.forEach(n=>{
+    const g = document.createElementNS(SVG_NS,'g');
+    const c = document.createElementNS(SVG_NS,'circle');
+    c.setAttribute('r', n.r); c.setAttribute('fill', n.color);
+    if (n.type==='kp') c.setAttribute('fill-opacity','0.92');
+    else c.setAttribute('fill-opacity','1');
+    g.appendChild(c);
+    const t = document.createElementNS(SVG_NS,'text');
+    t.setAttribute('class', 'node-label'+(n.type==='kp'?' sm':''));
+    t.setAttribute('text-anchor','middle');
+    t.textContent = (n.type==='kp') ? clip(n.label,7) : n.label;
+    g.appendChild(t);
+    g.style.cursor = 'pointer';
+    g.addEventListener('mouseenter', ()=> hover(n));
+    g.addEventListener('mouseleave', ()=> { if (!G.search) clearHover(); });
+    g.addEventListener('mousedown', ev=> startNodeDrag(ev,n));
+    g.addEventListener('click', ev=>{ ev.stopPropagation(); selectNode(n); });
+    SVG.appendChild(g);
+    G.nodeEls[n.id] = { g, c, t };
+  });
+}
+function clip(s,n){ return s.length>n ? s.slice(0,n)+'…' : s; }
+
+// ---------- physics ----------
+function loop(){
+  if (!G) return;
+  const nodes = G.nodes.filter(n=>n.visible);
+  const kRep = 4200, kSpring = 0.018, damp = 0.86;
+  // repulsion
+  for (let i=0;i<nodes.length;i++){
+    for (let j=i+1;j<nodes.length;j++){
+      const a=nodes[i], b=nodes[j];
+      let dx=a.x-b.x, dy=a.y-b.y; let d2=dx*dx+dy*dy; if (d2<1) d2=1;
+      const d=Math.sqrt(d2); const f=kRep/d2;
+      const fx=dx/d*f, fy=dy/d*f;
+      a.vx+=fx; a.vy+=fy; b.vx-=fx; b.vy-=fy;
+    }
+  }
+  // springs
+  const rest = { 'ROOT->ST':130, 'ST->U':95, 'U->KP':46 };
+  G.edges.forEach(e=>{
+    const a=G.byId[e.s], b=G.byId[e.t]; if (!a.visible||!b.visible) return;
+    let dx=b.x-a.x, dy=b.y-a.y; const d=Math.max(1,Math.sqrt(dx*dx+dy*dy));
+    let rl = 46; if (a.type==='root'||b.type==='root') rl=130; else if (a.type==='stage'||b.type==='stage') rl=95;
+    const f = kSpring*(d-rl);
+    const fx=dx/d*f, fy=dy/d*f;
+    a.vx+=fx; a.vy+=fy; b.vx-=fx; b.vy-=fy;
+  });
+  // anchor gravity + integrate
+  let energy = 0;
+  nodes.forEach(n=>{
+    const gr = n.type==='kp'?0.006 : 0.02;
+    n.vx += (n.anchor[0]-n.x)*gr; n.vy += (n.anchor[1]-n.y)*gr;
+    n.vx*=damp; n.vy*=damp;
+    n.x+=n.vx; n.y+=n.vy;
+    energy += n.vx*n.vx + n.vy*n.vy;
+  });
+  draw();
+  if (!G) return;
+  if (G.dragNode || G.dragBG || energy > 0.4) G._raf = requestAnimationFrame(loop);
+  else G._raf = null;
+}
+function kick(){ if (G && !G._raf) G._raf = requestAnimationFrame(loop); }
+function draw(){
+  // viewBox
+  SVG.setAttribute('viewBox', `${G.view.x} ${G.view.y} ${G.view.w} ${G.view.h}`);
+  const showKpLabel = G.view.w < 1100; // 放大后显示考点文字
+  G.edges.forEach((e,i)=>{
+    const a=G.byId[e.s], b=G.byId[e.t]; const el=G.edgeEls[i];
+    const vis = a.visible && b.visible;
+    el.style.display = vis? '' : 'none';
+    if (!vis) return;
+    el.setAttribute('x1',a.x); el.setAttribute('y1',a.y); el.setAttribute('x2',b.x); el.setAttribute('y2',b.y);
+  });
+  G.nodes.forEach(n=>{
+    const els=G.nodeEls[n.id];
+    els.g.style.display = n.visible? '' : 'none';
+    if (!n.visible) return;
+    els.c.setAttribute('cx',n.x); els.c.setAttribute('cy',n.y);
+    els.t.setAttribute('x',n.x); els.t.setAttribute('y',n.y + (n.type==='kp'? n.r+10 : n.r+5));
+    els.t.style.display = (n.type==='kp' ? showKpLabel : true) ? '' : 'none';
+  });
+}
+
+// ---------- interactions ----------
+function hover(n){
+  if (G.search) return;
+  const keep = new Set([n.id, ...G.adj[n.id]]);
+  G.nodes.forEach(m=>{ G.nodeEls[m.id].g.classList.toggle('dim', !keep.has(m.id)); });
+  G.edges.forEach((e,i)=>{
+    const hit = (e.s===n.id||e.t===n.id);
+    G.edgeEls[i].setAttribute('stroke', hit? '#2563eb':'#cbd5e1');
+    G.edgeEls[i].setAttribute('stroke-width', hit? '2':'1');
+  });
+}
+function clearHover(){
+  G.nodes.forEach(m=> G.nodeEls[m.id].g.classList.remove('dim'));
+  G.edges.forEach((e,i)=>{ G.edgeEls[i].setAttribute('stroke','#cbd5e1'); G.edgeEls[i].setAttribute('stroke-width','1'); });
+}
+
+function selectNode(n){
+  G.selected = n;
+  if (n.type==='kp') showKp(n.data);
+  else if (n.type==='stage') showStage(n.stage);
+  else if (n.type==='unit') showUnit(n);
+  else showRoot(G.subject, countKp());
+}
+function countKp(){ return G.nodes.filter(n=>n.type==='kp').length; }
+
+function showRoot(subject, total){
+  document.getElementById('panel').innerHTML =
+    `<h2>${esc(subject)} · 知识图谱</h2>
+     <div class="stat">该学科共 <b>${total}</b> 个考点，覆盖小学 / 初中 / 高中。<br>点击任一考点节点查看应知应会内容。</div>
+     <div class="sec"><b>结构</b><pre>学科
+└─ 小学（1-6年级）
+   └─ 学习主题 → 具体考点
+└─ 初中（7-9年级）
+   └─ 学习主题 → 具体考点
+└─ 高中（10-12年级）
+   └─ 学习主题 → 具体考点</pre></div>`;
+}
+function showStage(stage){
+  const kps = G.nodes.filter(n=>n.type==='kp'&&n.stage===stage).map(n=>n.data);
+  const units = [...new Set(kps.map(k=>k.unit))];
+  document.getElementById('panel').innerHTML =
+    `<h2>${stage} · ${kps.length} 个考点</h2>
+     <div class="sec"><b>学习主题（${units.length}）</b><div>${units.map(u=>`<span class="tag" style="background:${COLORS[stage]}22;color:${COLORS[stage]}">${esc(u)}</span>`).join('')}</div></div>
+     <div class="sec"><b>考点清单</b><pre>${kps.map(k=>'· '+esc(k.topic)).join('\n')}</pre></div>`;
+}
+function showUnit(u){
+  const kps = G.nodes.filter(n=>n.type==='kp'&&n.data.unit===u.label&&n.stage===u.stage).map(n=>n.data);
+  document.getElementById('panel').innerHTML =
+    `<h2 style="font-size:15px">${esc(u.label)}</h2>
+     <div class="stat">${u.stage} · ${kps.length} 个考点</div>
+     <div class="sec"><b>考点清单</b><pre>${kps.map(k=>'· '+esc(k.topic)).join('\n')}</pre></div>`;
+}
+function showKp(it){
+  document.getElementById('panel').innerHTML =
+    `<h2 style="font-size:16px">${esc(it.topic)}</h2>
+     <div>
+       <span class="tag" style="background:#2563eb22;color:#2563eb">${esc(it.subject)}</span>
+       <span class="tag" style="background:#10b98122;color:#10b981">${esc(it.gradeLabel)}</span>
+       <span class="tag" style="background:#f59e0b22;color:#b45309">${esc(it.unit||'')}</span>
+     </div>
+     <div class="sec"><b>📌 应知应会</b><pre>${esc(it.explanation)}</pre></div>
+     <div class="sec"><b>📝 典型例题</b><pre>${esc(it.example)}</pre></div>
+     <div class="sec"><b>🎯 考点 / 学业要求</b><pre>${esc(it.exam_focus||'—')}</pre></div>
+     <div class="sec"><span class="muted">该知识点已有 ${it.approach_count||0} 条用户思路，可在「知识广场」查看与学习。</span></div>`;
+}
+
+// filter (学段) + search
+function applyFilter(){
+  const sf = G.stageFilter, q = (G.search||'').trim().toLowerCase();
+  G.nodes.forEach(n=>{
+    let vis = true;
+    if (sf!=='all' && n.type!=='root' && n.stage!==sf) vis=false;
+    if (q && n.type==='kp'){
+      const hay = (n.data.topic+' '+n.data.unit+' '+n.data.explanation).toLowerCase();
+      if (!hay.includes(q)) vis=false;
+    }
+    n.visible = vis;
+  });
+  // hide edges where endpoint hidden
+  G.edges.forEach(e=>{ const a=G.byId[e.s], b=G.byId[e.t]; e._hidden = !(a.visible&&b.visible); });
+  clearHover();
+  // re-run physics a bit
+  if (G._raf) cancelAnimationFrame(G._raf);
+  loop();
+}
+document.getElementById('stageSeg').addEventListener('click', e=>{
+  if (e.target.tagName!=='BUTTON') return;
+  [...e.currentTarget.children].forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on');
+  G.stageFilter = e.target.dataset.s; applyFilter();
+});
+document.getElementById('search').addEventListener('input', e=>{
+  G.search = e.target.value;
+  if (!G.search) clearHover();
+  applyFilter();
+});
+document.getElementById('fitBtn').addEventListener('click', fitView);
+
+// drag node
+function startNodeDrag(ev, n){
+  ev.preventDefault(); ev.stopPropagation();
+  G.dragNode = n; n.x = toSvg(ev).x; n.y = toSvg(ev).y; n.vx=0; n.vy=0;
+  kick();
+  window.addEventListener('mousemove', onNodeDrag);
+  window.addEventListener('mouseup', endNodeDrag);
+}
+function onNodeDrag(ev){
+  if (!G.dragNode) return;
+  const p = toSvg(ev); G.dragNode.x=p.x; G.dragNode.y=p.y; G.dragNode.vx=0; G.dragNode.vy=0;
+  if (G._raf) cancelAnimationFrame(G._raf); loop();
+}
+function endNodeDrag(){ G.dragNode=null; window.removeEventListener('mousemove',onNodeDrag); window.removeEventListener('mouseup',endNodeDrag); if(G._raf) cancelAnimationFrame(G._raf); loop(); }
+
+// background pan + wheel zoom
+SVG.addEventListener('mousedown', ev=>{
+  if (ev.target!==SVG && ev.target.tagName!=='svg') return;
+  G.dragBG = { sx:ev.clientX, sy:ev.clientY, vx:G.view.x, vy:G.view.y };
+  SVG.classList.add('grabbing');
+  window.addEventListener('mousemove', onBGDrag); window.addEventListener('mouseup', endBGDrag);
+});
+function onBGDrag(ev){
+  if (!G.dragBG) return;
+  const k = VB.w / SVG.clientWidth;
+  G.view.x = G.dragBG.vx - (ev.clientX-G.dragBG.sx)*k;
+  G.view.y = G.dragBG.vy - (ev.clientY-G.dragBG.sy)*k;
+  draw();
+}
+function endBGDrag(){ G.dragBG=null; SVG.classList.remove('grabbing'); window.removeEventListener('mousemove',onBGDrag); window.removeEventListener('mouseup',endBGDrag); }
+
+SVG.addEventListener('wheel', ev=>{
+  ev.preventDefault();
+  const p = toSvg(ev); const factor = ev.deltaY>0 ? 1.1 : 0.9;
+  const nw = Math.min(VB.w*2, Math.max(300, G.view.w*factor));
+  const nh = nw * (VB.h/VB.w);
+  G.view.x = p.x - (p.x-G.view.x)*(nw/G.view.w);
+  G.view.y = p.y - (p.y-G.view.y)*(nh/G.view.h);
+  G.view.w = nw; G.view.h = nh;
+  draw();
+}, {passive:false});
+
+function toSvg(ev){
+  const r = SVG.getBoundingClientRect();
+  const x = G.view.x + (ev.clientX-r.left)/r.width*G.view.w;
+  const y = G.view.y + (ev.clientY-r.top)/r.height*G.view.h;
+  return {x,y};
+}
+function fitView(){
+  let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
+  G.nodes.filter(n=>n.visible).forEach(n=>{ minx=Math.min(minx,n.x-n.r); miny=Math.min(miny,n.y-n.r); maxx=Math.max(maxx,n.x+n.r); maxy=Math.max(maxy,n.y+n.r); });
+  const pad=60; G.view={ x:minx-pad, y:miny-pad, w:(maxx-minx)+pad*2, h:(maxy-miny)+pad*2 };
+  draw();
+}
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+loadSubjects();
+</script>
+</body>
+</html>

@@ -1,4 +1,6 @@
 'use strict';
+const fs = require('fs');
+const path = require('path');
 const { db, now } = require('./db');
 const { config } = require('./config');
 const { hashPassword } = require('./auth');
@@ -86,12 +88,13 @@ const bank = [
 const stmtB = db.prepare('INSERT INTO assessment_bank (grade,subject,question,options,answer,difficulty) VALUES (?,?,?,?,?,?)');
 bank.forEach(([g, s, q, o, a]) => stmtB.run(g, s, q, JSON.stringify(o), a, 2));
 
-// ---- 标准课程库：各学段各学科知识点 + 考点 ----
-const curriculum = [
-  ...require('./data/primary'),
-  ...require('./data/junior'),
-  ...require('./data/senior'),
-];
+// ---- 标准课程库：各学科小初高全部考点（按学科拆分于 data/subjects/）----
+const subjectsDir = path.join(__dirname, 'data', 'subjects');
+const curriculum = [];
+for (const f of fs.readdirSync(subjectsDir).filter(f => f.endsWith('.js')).sort()) {
+  const arr = require(path.join(subjectsDir, f));
+  if (Array.isArray(arr)) curriculum.push(...arr);
+}
 const stmtCur = db.prepare('INSERT INTO knowledge_points (subject,grade_level,unit,topic,explanation,example,exam_focus,source,created_by,status,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
 let curCount = 0;
 for (const c of curriculum) {
