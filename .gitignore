@@ -1,5 +1,8 @@
 node_modules/
-data/
+# 只忽略根目录下的运行时数据库目录（SQLite 文件），课程库源码 server/data/ 必须入库
+/data/
+*.db
+*.sqlite
 .env
 *.log
 .DS_Store
