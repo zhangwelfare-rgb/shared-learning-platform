@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>智学论坛 · 自学习智能体</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" onclick="App.go('home')">📚 智学论坛 <span>自学习智能体</span></div>
+    <nav class="nav">
+      <button data-view="home" onclick="App.go('home')">知识广场</button>
+      <button data-view="share" onclick="App.go('share')">分享思路</button>
+      <button data-view="assess" onclick="App.go('assess')">能力测评</button>
+      <button data-view="points" onclick="App.go('points')">积分中心</button>
+    </nav>
+    <div class="userbox" id="userbox"></div>
+  </header>
+
+  <main id="view"></main>
+
+  <div class="modal-mask" id="authModal">
+    <div class="modal">
+      <div class="modal-head">
+        <span id="authTitle">登录</span>
+        <button class="x" onclick="App.closeAuth()">×</button>
+      </div>
+      <div class="modal-body" id="authBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
