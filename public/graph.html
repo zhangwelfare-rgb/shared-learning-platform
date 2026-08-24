@@ -337,7 +337,7 @@ function render(){
     SVG.appendChild(c);
   }
   const keep = computeKeep();
-  const dim = (id)=> !keep.has(id);
+  const dim = (id)=> !keep.has(String(id));
   // 边：root-stage
   const edges = [];
   G.stages.forEach(s=> edges.push({a:'ROOT', b:s.id, kind:'tree'}));
@@ -363,6 +363,7 @@ function render(){
   if (G.expandedTheme) Object.values(G.points).forEach(p=> drawPoint(p, dim(p.it.id)));
 }
 function nodePos(id){
+  id = String(id);
   if (id==='ROOT') return G.root;
   if (id.startsWith('ST_')) return G.stagesById[id];
   if (id.startsWith('TH_')) return G.themes.find(t=>t.id===id);
@@ -373,6 +374,7 @@ function nodePos(id){
   return null;
 }
 function stageOfId(id){
+  id = String(id);
   if (id==='ROOT') return null;
   if (id.startsWith('ST_')) return id.slice(3);
   if (id.startsWith('TH_')) return G.themes.find(t=>t.id===id).stage;
