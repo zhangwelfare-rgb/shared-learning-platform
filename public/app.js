@@ -320,6 +320,8 @@ const App = (() => {
     try { const m = await api('GET','/meta'); meta = m; window.__STUDY__ = 3; window.__SIGNUP__ = 20; } catch(e){}
     if (token) { try { const d = await api('GET','/auth/me'); user = d.user; } catch(e){ token='';localStorage.removeItem(LS_TOKEN); } }
     renderUserbox(); go('home');
+    const kp = new URLSearchParams(location.search).get('kp');
+    if (kp) { try { await openKp(Number(kp)); } catch(e){} }
   }
 
   return { go, openLogin, openRegister, closeModal: closeModal, closeAuth: closeModal, doLogin, doRegister, logout,
