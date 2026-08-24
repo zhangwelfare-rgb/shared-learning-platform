@@ -20,30 +20,27 @@
 
 ## 🧱 技术栈
 
-- **后端**：Node.js（≥22，使用内置 `node:sqlite`，无需原生编译）+ Express + JWT（jsonwebtoken）+ bcryptjs
+- **后端**：Node.js（≥22）**零第三方依赖** —— 内置 `node:http`（Web 服务）、`node:sqlite`（数据库）、`node:crypto`（scrypt 密码哈希 + HMAC JWT）、`fetch`（调用大模型）
 - **前端**：原生 HTML / CSS / JS 单页应用（无构建步骤）
 - **AI 智能体**：DeepSeek（OpenAI 兼容接口），无 Key 时使用内置学科模板
 - **存储**：SQLite（`data/app.db`，自动创建）
 
-> 为什么用 `node:sqlite`：零原生依赖、无需编译，`npm install` 后即可运行。
+> 为什么零依赖：`npm install` 都省了 —— `node server/seed.js && node server/index.js` 即可运行，克隆即用、部署无忧。
 
 ---
 
 ## 🚀 快速开始
 
 ```bash
-# 1. 安装依赖
-npm install
-
-# 2. （可选）配置环境变量
+# 1.（可选）配置环境变量
 cp .env.example .env
 #    编辑 .env：填入 DEEPSEEK_API_KEY 可启用真实 AI 生成；不填也能完整运行
 
-# 3. 初始化演示数据（演示账号、示例知识点、测评题库）
-npm run seed
+# 2. 初始化演示数据（演示账号、示例知识点、测评题库）
+node server/seed.js
 
-# 4. 启动
-npm start
+# 3. 启动（零依赖，无需 npm install）
+node server/index.js
 ```
 
 打开 http://localhost:3000

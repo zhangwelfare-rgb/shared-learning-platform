@@ -1,8 +1,7 @@
 'use strict';
-require('dotenv').config();
-const bcrypt = require('bcryptjs');
 const { db, now } = require('./db');
 const { config } = require('./config');
+const { hashPassword } = require('./auth');
 
 const uCount = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
 if (uCount > 0) {
@@ -13,16 +12,16 @@ if (uCount > 0) {
 function ins(stmt, params) { return Number(stmt.run(...params).lastInsertRowid); }
 
 const teacherId = ins(db.prepare('INSERT INTO users (username,password_hash,role,grade,points,rmb_balance,created_at) VALUES (?,?,?,?,?,?,?)'),
-  ['teacher', bcrypt.hashSync('teacher123', 10), 'capable', null, 60, config.DEMO_RMB, now()]);
+  ['teacher', hashPassword('teacher123'), 'capable', null, 60, config.DEMO_RMB, now()]);
 const studentId = ins(db.prepare('INSERT INTO users (username,password_hash,role,grade,points,rmb_balance,created_at) VALUES (?,?,?,?,?,?,?)'),
-  ['student', bcrypt.hashSync('student123', 10), 'learner', 7, 30, config.DEMO_RMB, now()]);
+  ['student', hashPassword('student123'), 'learner', 7, 30, config.DEMO_RMB, now()]);
 ins(db.prepare('INSERT INTO users (username,password_hash,role,grade,points,rmb_balance,created_at) VALUES (?,?,?,?,?,?,?)'),
-  ['admin', bcrypt.hashSync('admin123', 10), 'admin', null, 0, config.DEMO_RMB, now()]);
+  ['admin', hashPassword('admin123'), 'admin', null, 0, config.DEMO_RMB, now()]);
 
 // ---- 知识点 + 思路 ----
-const kp = (subject, grade, topic, explanation, example) =>
-  ins(db.prepare('INSERT INTO knowledge_points (subject,grade_level,topic,explanation,example,source,created_by,status,created_at) VALUES (?,?,?,?,?,?,?,?,?)'),
-    [subject, grade, topic, explanation, example, 'ai', teacherId, 'active', now()]);
+const kp = (subject, grade, topic, explanation, example, unit = null, exam_focus = null) =>
+  ins(db.prepare('INSERT INTO knowledge_points (subject,grade_level,unit,topic,explanation,example,exam_focus,source,created_by,status,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)'),
+    [subject, grade, unit, topic, explanation, example, exam_focus, 'ai', teacherId, 'active', now()]);
 const ap = (kpId, title, content, category) =>
   ins(db.prepare('INSERT INTO approaches (kp_id,title,content,category,author_id,created_at) VALUES (?,?,?,?,?,?)'),
     [kpId, title, content, category, teacherId, now()]);
@@ -87,5 +86,19 @@ const bank = [
 const stmtB = db.prepare('INSERT INTO assessment_bank (grade,subject,question,options,answer,difficulty) VALUES (?,?,?,?,?,?)');
 bank.forEach(([g, s, q, o, a]) => stmtB.run(g, s, q, JSON.stringify(o), a, 2));
 
+// ---- 标准课程库：各学段各学科知识点 + 考点 ----
+const curriculum = [
+  ...require('./data/primary'),
+  ...require('./data/junior'),
+  ...require('./data/senior'),
+];
+const stmtCur = db.prepare('INSERT INTO knowledge_points (subject,grade_level,unit,topic,explanation,example,exam_focus,source,created_by,status,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
+let curCount = 0;
+for (const c of curriculum) {
+  stmtCur.run(c.s, c.g, c.u, c.t, c.e, c.x, c.k, 'curriculum', null, 'active', now());
+  curCount++;
+}
+
 console.log('✅ 种子数据初始化完成。');
+console.log(`   标准课程库已写入 ${curCount} 条知识点/考点（小初高 12 个年级 × 各学科）。`);
 console.log('   演示账号：teacher / teacher123（能力用户）  student / student123（学习用户）  admin / admin123');

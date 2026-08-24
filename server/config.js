@@ -1,6 +1,20 @@
 'use strict';
-require('dotenv').config();
+const fs = require('fs');
 const path = require('path');
+
+// 极简 .env 加载（零依赖）
+(function loadEnv() {
+  try {
+    const p = path.join(__dirname, '..', '.env');
+    const txt = fs.readFileSync(p, 'utf8');
+    for (const line of txt.split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
+      if (m && process.env[m[1]] === undefined) {
+        process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+      }
+    }
+  } catch (e) { /* 无 .env 时忽略 */ }
+})();
 
 const config = {
   PORT: Number(process.env.PORT || 3000),

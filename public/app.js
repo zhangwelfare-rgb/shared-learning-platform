@@ -69,6 +69,7 @@ const App = (() => {
     el('view').innerHTML = `<h2>📚 知识广场</h2>${filters}`;
     await searchKp();
   }
+  function srcName(s){ return s==='ai'?'平台生成':(s==='curriculum'?'标准课程库':'用户'); }
   async function searchKp() {
     const s = el('fSubject')?.value || '', g = el('fGrade')?.value || '', q = el('fQ')?.value || '';
     const qs = new URLSearchParams(); if (s) qs.set('subject', s); if (g) qs.set('grade', g); if (q) qs.set('q', q);
@@ -76,7 +77,7 @@ const App = (() => {
     el('kpList').innerHTML = data.items.length ? data.items.map(k => `
       <div class="kp" onclick="App.openKp(${k.id})">
         <div class="topic">${esc(k.topic)}</div>
-        <div class="meta"><span class="tag g">${esc(k.subject)}</span><span class="tag">${esc(k.gradeLabel)}</span><span class="tag c">${k.approach_count} 条思路</span><span class="muted">来源：${k.source==='ai'?'平台生成':'用户'}</span></div>
+        <div class="meta"><span class="tag g">${esc(k.subject)}</span><span class="tag">${esc(k.gradeLabel)}</span>${k.unit?`<span class="tag c">${esc(k.unit)}</span>`:''}<span class="tag">${k.approach_count} 条思路</span><span class="muted">来源：${srcName(k.source)}</span></div>
       </div>`).join('') : `<div class="card muted">暂无知识点，点“自动生成”试试。</div>`;
   }
   function gradeLabel(g){ if(g>=1&&g<=6)return '小学'+'一二三四五六'[g-1]+'年级'; if(g>=7&&g<=9)return '初中'+'一二三'[g-7]+'年级'; if(g>=10&&g<=12)return '高中'+'一二三'[g-10]+'年级'; return g+'年级';}
@@ -115,7 +116,8 @@ const App = (() => {
           <div><b style="font-size:18px">${esc(base.kp.topic)}</b></div>
           <button class="alt" onclick="App.go('home')">← 返回</button>
         </div>
-        <div class="meta" style="margin:6px 0"><span class="tag g">${esc(base.kp.subject)}</span><span class="tag">${esc(base.kp.gradeLabel)}</span>${lvlTag}</div>
+        <div class="meta" style="margin:6px 0"><span class="tag g">${esc(base.kp.subject)}</span><span class="tag">${esc(base.kp.gradeLabel)}</span>${base.kp.unit?`<span class="tag c">${esc(base.kp.unit)}</span>`:''}${lvlTag}<span class="muted">来源：${srcName(base.kp.source)}</span></div>
+        ${base.kp.exam_focus?`<div class="row" style="background:#fff3e0;border:1px solid #ffe0b2;border-radius:10px;padding:10px 12px;margin:8px 0"><b style="color:var(--warn)">🎯 考点：</b><span>${esc(base.kp.exam_focus)}</span></div>`:''}
         <h3>📖 知识点讲解</h3><div style="white-space:pre-wrap">${esc(base.kp.explanation)}</div>
         <h3>📝 典型例题</h3><div style="white-space:pre-wrap">${esc(base.kp.example)}</div>
         ${tailored && tailored!==base.kp.explanation ? `<h3>🤖 为你定制的讲解（自适应）</h3><div style="white-space:pre-wrap;background:#f3fbf7;border:1px solid #cfe9dc;border-radius:10px;padding:12px">${esc(tailored)}</div>`:''}
