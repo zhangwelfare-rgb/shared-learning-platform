@@ -105,3 +105,22 @@ for (const c of curriculum) {
 console.log('✅ 种子数据初始化完成。');
 console.log(`   标准课程库已写入 ${curCount} 条知识点/考点（小初高 12 个年级 × 各学科）。`);
 console.log('   演示账号：teacher / teacher123（能力用户）  student / student123（学习用户）  admin / admin123');
+
+// 理顺 MVP 示例数据：删除与标准课程库重复的物理·速度公式（保留权威课程库版），
+// 并补全其余示例知识点的学习主题(unit)，避免主页/搜索出现空字段或重复考点。
+try {
+  const dupKp = db.prepare("SELECT id FROM knowledge_points WHERE source='ai' AND topic='速度公式 v=s/t 的应用'").get();
+  if (dupKp) {
+    db.prepare('DELETE FROM approaches WHERE kp_id=?').run(dupKp.id);
+    db.prepare('DELETE FROM knowledge_points WHERE id=?').run(dupKp.id);
+  }
+  const fixUnits = [
+    ['数与代数·函数与不等式', '已知 xy=20，求 3x+4y 的最小值'],
+    ['数与代数·方程与不等式', '一元二次方程求根公式'],
+    ['阅读与鉴赏·修辞手法', '比喻修辞手法'],
+    ['词法·动词时态', '一般过去时'],
+    ['数与代数·数与运算', '分数加减法'],
+  ];
+  const fixStmt = db.prepare("UPDATE knowledge_points SET unit=? WHERE source='ai' AND topic=?");
+  for (const [u, t] of fixUnits) fixStmt.run(u, t);
+} catch (e) { /* 幂等保护：若已清理过则跳过 */ }
