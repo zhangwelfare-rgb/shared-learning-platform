@@ -7,38 +7,21 @@
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: #1f2937; background: #f1f5f9; }
-  header.topbar { display: flex; align-items: center; gap: 12px; padding: 9px 16px; background: #fff; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }
-  .brand { font-weight: 800; font-size: 17px; color: #2563eb; cursor: pointer; white-space: nowrap; }
+  header.topbar { display: flex; align-items: center; gap: 12px; padding: 10px 18px; background: #fff; border-bottom: 1px solid #e5e7eb; flex-wrap: wrap; }
+  .brand { font-weight: 800; font-size: 18px; color: #2563eb; cursor: pointer; }
   .brand span { font-size: 12px; color: #94a3b8; font-weight: 500; margin-left: 4px; }
   .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
   select, input, button { font-size: 14px; border: 1px solid #d1d5db; border-radius: 8px; padding: 6px 10px; background: #fff; color: #1f2937; }
-  input[type=text] { width: 170px; }
+  input[type=text] { width: 180px; }
   .seg { display: inline-flex; border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden; }
   .seg button { border: none; border-radius: 0; border-right: 1px solid #e5e7eb; padding: 6px 12px; cursor: pointer; background: #fff; color: #475569; }
   .seg button:last-child { border-right: none; }
   .seg button.on { background: #2563eb; color: #fff; }
-  .wrap { display: flex; height: calc(100% - 54px); }
-  /* 左侧大纲 */
-  #outline { width: 270px; background: #fff; border-right: 1px solid #e5e7eb; overflow-y: auto; padding: 10px 6px; font-size: 13px; flex-shrink: 0; }
-  #outline .otitle { font-weight: 700; color: #334155; padding: 4px 8px 8px; font-size: 13px; display:flex; justify-content:space-between; align-items:center;}
-  #outline .otitle .cnt { color:#94a3b8; font-weight:500; font-size:12px;}
-  .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
-  .tree ul { padding-left: 14px; border-left: 1px dashed #e2e8f0; margin-left: 6px; }
-  .node-row { display: flex; align-items: center; gap: 4px; padding: 3px 6px; border-radius: 6px; cursor: pointer; line-height: 1.35; }
-  .node-row:hover { background: #eff6ff; }
-  .node-row.active { background: #dbeafe; }
-  .node-row .tw { width: 14px; text-align: center; color: #94a3b8; font-size: 11px; flex-shrink: 0; }
-  .node-row .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .node-row.kp .nm { color: #475569; }
-  .node-row.theme .nm { color: #1d4ed8; font-weight: 600; }
-  .node-row.domain .nm { color: #0f766e; font-weight: 600; }
-  .node-row.stage .nm { color: #b45309; font-weight: 700; }
-  .node-row .badge { margin-left: auto; font-size: 11px; color: #94a3b8; }
-  /* 画布 */
-  #stage { flex: 1; position: relative; overflow: hidden; background: radial-gradient(circle at 50% 20%, #ffffff, #eef2f7); min-width: 0; }
+  .wrap { display: flex; height: calc(100% - 56px); }
+  #stage { flex: 1; position: relative; overflow: hidden; background: radial-gradient(circle at 50% 30%, #ffffff, #eef2f7); }
   svg { width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; }
   svg.grabbing { cursor: grabbing; }
-  .panel { width: 340px; background: #fff; border-left: 1px solid #e5e7eb; padding: 16px; overflow-y: auto; flex-shrink: 0; }
+  .panel { width: 360px; background: #fff; border-left: 1px solid #e5e7eb; padding: 16px; overflow-y: auto; }
   .panel h2 { margin: 0 0 6px; font-size: 17px; line-height: 1.4; }
   .tag { display: inline-block; font-size: 12px; padding: 2px 9px; border-radius: 999px; margin: 2px 4px 2px 0; }
   .panel .sec { margin-top: 14px; }
@@ -49,37 +32,31 @@
   .btn { display: inline-block; cursor: pointer; border: none; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-weight: 600; margin: 6px 6px 0 0; }
   .btn.primary { background: #2563eb; color: #fff; }
   .btn.ghost { background: #eef2ff; color: #4338ca; }
-  .legend { position: absolute; left: 12px; bottom: 12px; background: rgba(255,255,255,.92); border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 14px; font-size: 12px; line-height: 1.7; max-width: 250px; }
+  .legend { position: absolute; left: 12px; bottom: 12px; background: rgba(255,255,255,.92); border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 14px; font-size: 12px; line-height: 1.7; max-width: 230px; }
   .legend b { color: #334155; }
   .legend i.dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -2px; }
-  .legend i.ring { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -2px; border: 2px solid #94a3b8; background:#fff;}
-  .legend i.line { display: inline-block; width: 18px; height: 0; border-top: 2px dashed #f59e0b; margin-right: 6px; vertical-align: 3px; }
-  .hint { position: absolute; right: 12px; top: 12px; background: rgba(255,255,255,.92); border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px 12px; font-size: 12px; color: #64748b; max-width: 230px; line-height: 1.6; }
+  .legend i.ring { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -2px; border: 2px solid #94a3b8; }
+  .hint { position: absolute; right: 12px; top: 12px; background: rgba(255,255,255,.92); border: 1px solid #e5e7eb; border-radius: 10px; padding: 8px 12px; font-size: 12px; color: #64748b; max-width: 220px; line-height: 1.6; }
   .stat { font-size: 13px; color: #64748b; }
   .node-label { font-size: 11px; fill: #334155; pointer-events: none; user-select: none; }
-  .node-label.th { font-size: 11.5px; font-weight: 600; fill: #1e3a8a; }
-  .zone-label { font-size: 20px; font-weight: 800; fill: #94a3b8; opacity: .55; pointer-events: none; user-select: none; }
-  .dim { opacity: .12 !important; }
+  .node-label.sm { font-size: 10px; fill: #64748b; }
+  .zone-label { font-size: 22px; font-weight: 800; fill: #94a3b8; opacity: .5; pointer-events: none; user-select: none; }
+  .dim { opacity: .1 !important; }
   .dimedge { stroke-opacity: .05 !important; }
-  .focusring { fill: rgba(37,99,235,.06); stroke: #93c5fd; stroke-dasharray: 5 5; }
-  #tooltip { position: absolute; pointer-events: none; background: #1e293b; color: #fff; padding: 5px 9px; border-radius: 6px; font-size: 12px; max-width: 280px; display: none; z-index: 20; box-shadow: 0 4px 14px rgba(0,0,0,.2); transform: translate(-50%, -130%); white-space: pre-wrap; }
+  #tooltip { position: absolute; pointer-events: none; background: #1e293b; color: #fff; padding: 5px 9px; border-radius: 6px; font-size: 12px; max-width: 260px; display: none; z-index: 20; box-shadow: 0 4px 14px rgba(0,0,0,.2); transform: translate(-50%, -130%); white-space: pre-wrap; }
   #overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; flex-direction: column; gap: 10px; background: rgba(241,245,249,.85); color: #475569; font-size: 14px; }
   .spinner { width: 28px; height: 28px; border: 3px solid #cbd5e1; border-top-color: #2563eb; border-radius: 50%; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .errbox { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 12px 16px; border-radius: 10px; }
-  .collapse-btn { cursor:pointer; border:none; background:#f1f5f9; border-radius:6px; padding:2px 7px; font-size:12px; color:#475569;}
-  @media (max-width: 900px){
-    #outline { display:none; }
-    .panel { display:none; }
-    .hint { display:none; }
-  }
 </style>
 </head>
 <body>
 <header class="topbar">
   <div class="brand" onclick="location.href='/'">📚 智学论坛 <span>学科知识图谱</span></div>
   <div class="controls">
-    <label>学科 <select id="subjectSel"></select></label>
+    <label>学科
+      <select id="subjectSel"></select>
+    </label>
     <div class="seg" id="stageSeg">
       <button data-s="all" class="on">全部</button>
       <button data-s="小学">小学</button>
@@ -92,30 +69,25 @@
   </div>
 </header>
 <div class="wrap">
-  <div id="outline">
-    <div class="otitle"><span>📑 考点大纲</span><span class="cnt" id="outlineCnt"></span></div>
-    <div id="treeRoot"></div>
-  </div>
   <div id="stage">
     <svg id="svg" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid meet"></svg>
     <div id="tooltip"></div>
     <div class="legend">
-      <div><b>节点</b></div>
-      <div><i class="dot" style="background:#ef4444"></i>学科 · <i class="dot" style="background:#10b981"></i>学段 · <i class="dot" style="background:#0ea5e9"></i>学习主题 · <i class="ring"></i>考点</div>
-      <div style="margin-top:4px"><b>颜色</b>：同一「知识领域」同色（如数与代数=同色跨学段）</div>
-      <div style="margin-top:4px"><b>连线</b>：实线=归属；<i class="line"></i>虚线=跨年级进阶/关联</div>
-      <div style="margin-top:4px"><b>操作</b>：点主题展开考点 · 滚轮缩放 · 拖空白平移</div>
+      <div><b>节点大小</b></div>
+      <div><i class="dot" style="background:#ef4444"></i>学科 · <i class="dot" style="background:#3b82f6"></i>学段 · <i class="dot" style="background:#22c55e"></i>主题 · <i class="ring"></i>考点</div>
+      <div style="margin-top:4px"><b>颜色</b>：同一「学习主题」为同色簇，跨主题区分</div>
+      <div style="margin-top:4px"><b>操作</b>：滚轮/双指缩放 · 拖空白平移 · 拖节点重排 · 点击高亮链路</div>
     </div>
-    <div class="hint">默认显示「学科→学段→学习主题」骨架；<b>点击任意学习主题</b>展开其下全部考点，并自动连出跨年级的进阶关系。</div>
+    <div class="hint">悬浮显示考点名 · 点击节点高亮「学科→学段→主题→考点」整条链路 · 点空白清除</div>
     <div id="overlay"><div class="spinner"></div><div id="overlayText">加载考点中…</div></div>
   </div>
   <div class="panel" id="panel">
     <h2>学科知识图谱</h2>
     <div class="stat" id="stat"></div>
-    <div class="sec"><b>使用说明</b><pre>1. 选学科后，图谱先展示「学科 → 学段 → 学习主题」骨架（始终清爽可读）。
-2. 点击某个学习主题，才展开它下面的全部考点。
-3. 同属一个知识领域的考点（如“数与代数”）会自动连出跨年级的进阶/关联虚线，体现知识脉络。
-4. 左侧大纲可按 学段▸领域▸主题▸考点 直接定位；点击考点看应知应会。</pre></div>
+    <div class="sec"><b>使用说明</b><pre>1. 选择上方学科，图谱把该学科小初高全部考点集合进来。
+2. 结构：学科 → 学段(小学/初中/高中) → 学习主题 → 具体考点。
+3. 悬浮节点看考点名；点击考点看应知应会、例题与考点。
+4. 点击节点会高亮其所属完整链路；学段筛选/搜索可快速定位。</pre></div>
   </div>
 </div>
 
@@ -125,16 +97,17 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 const TOOLTIP = document.getElementById('tooltip');
 const OVERLAY = document.getElementById('overlay');
 const COLORS = { 'root':'#ef4444', '小学':'#10b981', '初中':'#3b82f6', '高中':'#8b5cf6' };
+const ZONES = {
+  '小学': { x:60,  y:80, w:400, h:760, color:'#10b981' },
+  '初中': { x:500, y:80, w:400, h:760, color:'#3b82f6' },
+  '高中': { x:940, y:80, w:400, h:760, color:'#8b5cf6' }
+};
 const VB = { w:1400, h:900 };
 let G = null;
 
 function gradeToStage(g){ return g<=6 ? '小学' : g<=9 ? '初中' : '高中'; }
 function hashHue(str){ let h=0; for (let i=0;i<str.length;i++) h=(h*31 + str.charCodeAt(i)) % 360; return h; }
-function hueColor(s){ return `hsl(${hashHue(s)},60%,48%)`; }
 function clip(s,n){ return s.length>n ? s.slice(0,n)+'…' : s; }
-function esc(s){ return (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
-function domainOf(unit){ return (unit||'').split('·')[0] || unit || '其他'; }
-function nameOf(unit){ const p=(unit||'').split('·'); return p.length>1 ? p.slice(1).join('·') : (unit||''); }
 
 async function loadSubjects(){
   try {
@@ -147,6 +120,7 @@ async function loadSubjects(){
 }
 
 async function buildGraph(subject){
+  if (G && G._raf) cancelAnimationFrame(G._raf);
   showOverlay('loading', '加载「'+subject+'」考点中…');
   let items;
   try {
@@ -156,320 +130,244 @@ async function buildGraph(subject){
   } catch(e){ showOverlay('error', '加载失败：'+e.message); return; }
   hideOverlay();
 
-  // 骨架定位
-  const root = { id:'ROOT', type:'root', label:subject, color:COLORS.root, r:30, x:700, y:46 };
-  const stageXY = { '小学':[260,180], '初中':[700,180], '高中':[1140,180] };
-  const stages = ['小学','初中','高中'].map(s=>{
-    const [x,y]=stageXY[s];
-    return { id:'ST_'+s, type:'stage', label:s, stage:s, color:COLORS[s], r:24, x, y };
+  const nodes = [], edges = [], byId = {};
+  const add = (n)=>{ nodes.push(n); byId[n.id]=n; return n; };
+
+  // 学科根
+  const root = add({ id:'ROOT', label:subject, type:'root', stage:null, color:COLORS.root, r:34, anchor:[700,38], parent:null, data:null });
+  ['小学','初中','高中'].forEach(s=>{
+    const z = ZONES[s];
+    const st = add({ id:'ST_'+s, label:s, type:'stage', stage:s, color:COLORS[s], r:26, anchor:[z.x+z.w/2, z.y+70], parent:'ROOT', data:null });
+    edges.push({ s:'ROOT', t:st.id });
   });
-  // 主题分组 + 定位
-  const byStage = { '小学':[], '初中':[], '高中':[] };
-  const themeMap = {};
+
+  // 按学段、按 unit 分组，单元在学段区域内网格排布，考点围绕单元
+  const stageUnitMap = { '小学':{}, '初中':{}, '高中':{} };
+  const stageUnits = { '小学':[], '初中':[], '高中':[] };
   items.forEach(it=>{
     const st = gradeToStage(it.grade_level);
     const key = st+'|'+it.unit;
-    if (!themeMap[key]){
-      const th = { id:'TH_'+key, type:'theme', stage:st, unit:it.unit, domain:domainOf(it.unit), name:nameOf(it.unit), color:hueColor(domainOf(it.unit)), items:[], x:0, y:0, r:13 };
-      themeMap[key]=th; byStage[st].push(th);
+    if (!stageUnitMap[st][key]){
+      const u = add({ id:'U_'+key, label:it.unit, type:'unit', stage:st, color:hueColor(it.unit), r:16, anchor:[0,0], parent:'ST_'+st, data:null });
+      stageUnitMap[st][key]=u; stageUnits[st].push(u);
     }
-    themeMap[key].items.push(it);
   });
-  const stagesById = {}; stages.forEach(s=>stagesById[s.id]=s);
-  ['小学','初中','高中'].forEach((st,si)=>{
-    const list = byStage[st];
-    const baseX = stageXY[st][0];
-    const y0 = 300, avail = 560;
-    const gap = Math.min(62, avail/Math.max(1,list.length));
-    list.forEach((th,i)=>{ th.x = baseX; th.y = y0 + i*gap; });
-  });
-
-  G = {
-    subject, items, root, stages, stagesById, themes:Object.values(themeMap),
-    view:{x:0,y:0,w:VB.w,h:VB.h},
-    expanded:null, filterStage:'all', selected:null, search:'',
-    outlineOpen:{}, // key -> bool
-    hoverNode:null, points:{}, links:[], _touch:null
-  };
-  // 默认展开第一个主题，给出直观示例
-  if (G.themes.length) expandTheme(G.themes[0].id, false);
-
-  document.getElementById('stat').textContent =
-    `共 ${items.length} 个考点 · ${byStage['小学'].length+byStage['初中'].length+byStage['高中'].length} 个学习主题 · 小学 ${byStage['小学'].length} / 初中 ${byStage['初中'].length} / 高中 ${byStage['高中'].length}`;
-  buildOutline();
-  render();
-  fitView();
-}
-
-// ---------- 大纲 ----------
-function buildOutline(){
-  const tree = { '小学':{}, '初中':{}, '高中':{} };
-  G.themes.forEach(th=>{
-    const dom = th.domain;
-    if (!tree[th.stage][dom]) tree[th.stage][dom] = {};
-    tree[th.stage][dom][th.unit] = th;
-  });
-  const root = document.getElementById('treeRoot');
-  let html = '<ul class="tree">';
-  ['小学','初中','高中'].forEach(st=>{
-    const stageCount = G.items.filter(i=>gradeToStage(i.grade_level)===st).length;
-    const domKeys = Object.keys(tree[st]);
-    html += `<li><div class="node-row stage" data-kind="stage" data-stage="${st}"><span class="tw">▾</span><span class="nm">${st}</span><span class="badge">${stageCount}</span></div>`;
-    html += '<ul>';
-    domKeys.forEach(dom=>{
-      const thKeys = Object.keys(tree[st][dom]);
-      const domCount = thKeys.reduce((a,k)=>a+tree[st][dom][k].items.length,0);
-      html += `<li><div class="node-row domain" data-kind="domain" data-stage="${st}" data-dom="${esc(dom)}"><span class="tw">▾</span><span class="nm" style="color:${hueColor(dom)}">${esc(dom)}</span><span class="badge">${domCount}</span></div>`;
-      html += '<ul>';
-      thKeys.forEach(unit=>{
-        const th = tree[st][dom][unit];
-        html += `<li><div class="node-row theme" data-kind="theme" data-thid="${th.id}"><span class="tw">▸</span><span class="nm">${esc(th.name)}</span><span class="badge">${th.items.length}</span></div>`;
-        html += '<ul>';
-        th.items.forEach(it=>{
-          html += `<li><div class="node-row kp" data-kind="kp" data-id="${it.id}" data-thid="${th.id}"><span class="tw">•</span><span class="nm">${esc(it.topic)}</span></div></li>`;
-        });
-        html += '</ul></li>';
-      });
-      html += '</ul></li>';
+  // 单元网格锚点
+  for (const st of ['小学','初中','高中']){
+    const z = ZONES[st]; const list = stageUnits[st];
+    const cols = Math.max(1, Math.ceil(Math.sqrt(list.length)));
+    const rows = Math.ceil(list.length/cols);
+    const padX = 46, padTop = 150, padBottom = 40;
+    const cw = (z.w - padX*2)/cols, ch = (z.h - padTop - padBottom)/rows;
+    list.forEach((u,i)=>{
+      const c = i%cols, r = Math.floor(i/cols);
+      u.anchor = [ z.x + padX + (c+0.5)*cw, z.y + padTop + (r+0.5)*ch ];
     });
-    html += '</ul></li>';
-  });
-  html += '</ul>';
-  root.innerHTML = html;
-  // 默认展开学段与领域
-  ['小学','初中','高中'].forEach(st=>{ G.outlineOpen['stage:'+st]=true; });
-  applyOutlineOpen();
-  document.getElementById('outlineCnt').textContent = G.items.length + ' 考点';
-}
-function applyOutlineOpen(){
-  const root = document.getElementById('treeRoot');
-  root.querySelectorAll('.node-row').forEach(row=>{
-    const kind = row.dataset.kind;
-    const ul = row.parentElement.querySelector(':scope > ul');
-    if (!ul) return;
-    let open = false;
-    if (kind==='stage') open = !!G.outlineOpen['stage:'+row.dataset.stage];
-    else if (kind==='domain') open = !!G.outlineOpen['dom:'+row.dataset.stage+'|'+row.dataset.dom];
-    else if (kind==='theme') open = !!G.outlineOpen['theme:'+row.dataset.thid];
-    ul.style.display = open ? '' : 'none';
-    const tw = row.querySelector('.tw');
-    if (tw) tw.textContent = open ? '▾' : '▸';
-  });
-}
-document.getElementById('treeRoot').addEventListener('click', e=>{
-  const row = e.target.closest('.node-row'); if(!row) return;
-  const kind = row.dataset.kind;
-  if (kind==='stage'){
-    const k='stage:'+row.dataset.stage; G.outlineOpen[k]=!G.outlineOpen[k]; applyOutlineOpen();
-  } else if (kind==='domain'){
-    const k='dom:'+row.dataset.stage+'|'+row.dataset.dom; G.outlineOpen[k]=!G.outlineOpen[k]; applyOutlineOpen();
-  } else if (kind==='theme'){
-    const k='theme:'+row.dataset.thid; G.outlineOpen[k]=!G.outlineOpen[k]; applyOutlineOpen();
-    expandTheme(row.dataset.thid, true);
-  } else if (kind==='kp'){
-    const it = G.items.find(x=>String(x.id)===row.dataset.id);
-    expandTheme(row.dataset.thid, false);
-    selectPoint(it, true);
   }
-});
+  // 考点锚点（围绕所属单元）
+  const unitKpCount = {};
+  items.forEach(it=>{
+    const st = gradeToStage(it.grade_level);
+    const u = stageUnitMap[st][st+'|'+it.unit];
+    const k = (unitKpCount[u.id] = (unitKpCount[u.id]||0) + 1);
+    const ang = (k*2.39996); // 黄金角螺旋
+    const rad = 14 + Math.sqrt(k)*16;
+    const ax = u.anchor[0] + Math.cos(ang)*rad, ay = u.anchor[1] + Math.sin(ang)*rad;
+    const kp = add({ id:'KP_'+it.id, label:it.topic, type:'kp', stage:st, color:u.color, r:8, anchor:[ax,ay], parent:u.id, data:it });
+    edges.push({ s:u.id, t:kp.id });
+  });
 
-// ---------- 展开主题 / 计算考点位置与进阶关联 ----------
-function expandTheme(thid, fit){
-  const th = G.themes.find(t=>t.id===thid); if(!th) return;
-  G.expanded = true;
-  G.expandedTheme = th;
-  G.points = {};
-  G.links = [];
-  const pts = th.items;
-  const n = pts.length;
-  const R = Math.max(120, n*16);
-  pts.forEach((it,i)=>{
-    const ang = -Math.PI/2 + i*(2*Math.PI/n);
-    G.points[it.id] = { it, th, x: th.x + Math.cos(ang)*R, y: th.y + Math.sin(ang)*R, r:9, color:th.color };
-  });
-  // 碰撞微调（同主题点之间）
-  for (let pass=0; pass<6; pass++){
-    const arr = Object.values(G.points);
-    for (let i=0;i<arr.length;i++) for (let j=i+1;j<arr.length;j++){
-      const a=arr[i], b=arr[j]; let dx=b.x-a.x, dy=b.y-a.y; let d=Math.hypot(dx,dy)||0.01;
-      if (d<26){ const push=(26-d)/2; dx/=d; dy/=d; a.x-=dx*push; a.y-=dy*push; b.x+=dx*push; b.y+=dy*push; }
-    }
-  }
-  // 跨年级进阶/关联：同知识领域、不同主题、年级最接近
-  pts.forEach(it=>{
-    const cand = G.items.filter(o=> o.id!==it.id && domainOf(o.unit)===th.domain && o.unit!==th.unit);
-    if (!cand.length) return;
-    cand.sort((a,b)=> Math.abs(a.grade_level-it.grade_level) - Math.abs(b.grade_level-it.grade_level));
-    const tgt = cand[0];
-    G.links.push({ from:it.id, toTheme:tgt.unit, toStage:gradeToStage(tgt.grade_level), label:'进阶' });
-  });
-  G.selected = null;
-  if (fit) fitView();
-  render();
-}
-function collapseAll(){
-  G.expandedTheme=null; G.points={}; G.links=[]; G.selected=null; render();
+  // 邻接 & 祖先
+  const adj = {}; nodes.forEach(n=> adj[n.id]=new Set());
+  edges.forEach(e=>{ adj[e.s].add(e.t); adj[e.t].add(e.s); });
+  const ancestorsOf = (n)=>{ const a=[]; let p=n.parent; while(p){ a.push(p); p=byId[p]?byId[p].parent:null; } return a; };
+
+  G = { subject, nodes, edges, byId, adj, ancestorsOf,
+        view:{x:0,y:0,w:VB.w,h:VB.h}, scale:1, dragNode:null, dragBG:null,
+        search:'', stageFilter:'all', selected:null, hoverNode:null, lastUnit:'', _raf:null, _touch:null };
+
+  nodes.forEach(n=>{ n.x=n.anchor[0]+(Math.random()-0.5)*24; n.y=n.anchor[1]+(Math.random()-0.5)*24; n.vx=0; n.vy=0; n.visible=true; });
+
+  buildSVG();
+  const cnt = { '小学':0,'初中':0,'高中':0 };
+  items.forEach(i=> cnt[gradeToStage(i.grade_level)]++ );
+  document.getElementById('stat').textContent = `共 ${items.length} 个考点 · 小学 ${cnt['小学']} / 初中 ${cnt['初中']} / 高中 ${cnt['高中']}`;
+  showRoot(subject, items.length);
+  applyFilter();
+  fitView();
+  loop();
 }
 
-// ---------- 渲染 ----------
-function render(){
+// ---------- SVG 构建 ----------
+function buildSVG(){
   while (SVG.firstChild) SVG.removeChild(SVG.firstChild);
+  // 学段背景分区
+  for (const st of ['小学','初中','高中']){
+    const z = ZONES[st];
+    const r = document.createElementNS(SVG_NS,'rect');
+    r.setAttribute('x',z.x); r.setAttribute('y',z.y); r.setAttribute('width',z.w); r.setAttribute('height',z.h);
+    r.setAttribute('rx',18); r.setAttribute('fill',z.color); r.setAttribute('fill-opacity','0.05');
+    r.setAttribute('stroke',z.color); r.setAttribute('stroke-opacity','0.35'); r.setAttribute('stroke-dasharray','6 6');
+    r.style.pointerEvents='none';
+    SVG.appendChild(r);
+    const t = document.createElementNS(SVG_NS,'text');
+    t.setAttribute('class','zone-label'); t.setAttribute('x',z.x+z.w/2); t.setAttribute('y',z.y+42);
+    t.setAttribute('text-anchor','middle'); t.textContent = st;
+    SVG.appendChild(t);
+  }
+  G.edgeEls = G.edges.map(e=>{
+    const l = document.createElementNS(SVG_NS,'line');
+    l.setAttribute('stroke','#cbd5e1'); l.setAttribute('stroke-width','1.4');
+    SVG.appendChild(l); return l;
+  });
+  G.nodeEls = {};
+  const order = { 'root':0,'stage':1,'unit':2,'kp':3 };
+  G.nodes.slice().sort((a,b)=>order[a.type]-order[b.type]).forEach(n=>{
+    const g = document.createElementNS(SVG_NS,'g');
+    const c = document.createElementNS(SVG_NS,'circle');
+    c.setAttribute('r', n.r); c.setAttribute('fill', n.color);
+    c.setAttribute('fill-opacity', n.type==='kp' ? '0.95' : '1');
+    if (n.type==='unit' || n.type==='stage'){ c.setAttribute('stroke','#fff'); c.setAttribute('stroke-width','2'); }
+    g.appendChild(c);
+    const t = document.createElementNS(SVG_NS,'text');
+    t.setAttribute('class', 'node-label'+(n.type==='kp'?' sm':''));
+    t.setAttribute('text-anchor','middle');
+    t.textContent = (n.type==='kp') ? clip(n.label,7) : (n.type==='unit'? unitShort(n.label) : n.label);
+    g.appendChild(t);
+    g.style.cursor = 'pointer';
+    g.addEventListener('mouseenter', ()=> { hover(n); showTip(n); });
+    g.addEventListener('mousemove', moveTip);
+    g.addEventListener('mouseleave', ()=> { hideTip(); if (!G.search) clearHighlight(); });
+    g.addEventListener('mousedown', ev=> startNodeDrag(ev,n));
+    g.addEventListener('click', ev=>{ ev.stopPropagation(); selectNode(n); });
+    // 触控
+    g.addEventListener('touchstart', ev=> startTouchNode(ev,n), {passive:false});
+    SVG.appendChild(g);
+    G.nodeEls[n.id] = { g, c, t };
+  });
+}
+function unitShort(u){ const p = u.split('·'); return p.length>1 ? p[p.length-1] : u; }
+
+// ---------- 物理 ----------
+function loop(){
   if (!G) return;
-  // 学段背景区
-  const zones = { '小学':[60,110,360,770], '初中':[520,110,360,770], '高中':[980,110,360,770] };
-  ['小学','初中','高中'].forEach(st=>{
-    if (G.filterStage!=='all' && G.filterStage!==st) return;
-    const [x,y,w,h]=zones[st];
-    const r=document.createElementNS(SVG_NS,'rect');
-    r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',w); r.setAttribute('height',h);
-    r.setAttribute('rx',18); r.setAttribute('fill',COLORS[st]); r.setAttribute('fill-opacity','0.04');
-    r.setAttribute('stroke',COLORS[st]); r.setAttribute('stroke-opacity','0.3'); r.setAttribute('stroke-dasharray','6 6');
-    r.style.pointerEvents='none'; SVG.appendChild(r);
-    const t=document.createElementNS(SVG_NS,'text');
-    t.setAttribute('class','zone-label'); t.setAttribute('x',x+w/2); t.setAttribute('y',y+38); t.setAttribute('text-anchor','middle');
-    t.textContent=st; SVG.appendChild(t);
-  });
-  // 展开主题的聚焦圈
-  if (G.expandedTheme){
-    const th=G.expandedTheme; const R=Math.max(150, th.items.length*18);
-    const c=document.createElementNS(SVG_NS,'circle');
-    c.setAttribute('class','focusring'); c.setAttribute('cx',th.x); c.setAttribute('cy',th.y); c.setAttribute('r',R);
-    SVG.appendChild(c);
-  }
-  const keep = computeKeep();
-  const dim = (id)=> !keep.has(String(id));
-  // 边：root-stage
-  const edges = [];
-  G.stages.forEach(s=> edges.push({a:'ROOT', b:s.id, kind:'tree'}));
-  G.themes.forEach(th=>{ if (passFilter(th)) edges.push({a:'ST_'+th.stage, b:th.id, kind:'tree'}); });
-  if (G.expandedTheme){
-    Object.values(G.points).forEach(p=> edges.push({a:G.expandedTheme.id, b:p.it.id, kind:'tree'}));
-    G.links.forEach(l=> edges.push({a:l.from, b:l.toTheme+'|'+l.toStage, kind:'advance'}));
-  }
-  const edgeEls = edges.map(e=>{
-    const a=nodePos(e.a), b=nodePos(e.b); if(!a||!b) return null;
-    const ln=document.createElementNS(SVG_NS,'line');
-    ln.setAttribute('x1',a.x); ln.setAttribute('y1',a.y); ln.setAttribute('x2',b.x); ln.setAttribute('y2',b.y);
-    if (e.kind==='advance'){ ln.setAttribute('stroke','#f59e0b'); ln.setAttribute('stroke-width','1.6'); ln.setAttribute('stroke-dasharray','5 4'); }
-    else { ln.setAttribute('stroke','#cbd5e1'); ln.setAttribute('stroke-width','1.4'); }
-    const d = dim(e.a) || dim(e.b);
-    if (d) ln.setAttribute('class','dimedge');
-    SVG.appendChild(ln); return ln;
-  });
-  // 节点
-  drawNode(G.root, dim(G.root.id));
-  G.stages.forEach(s=> drawNode(s, dim(s.id)));
-  G.themes.forEach(th=> drawNode(th, dim(th.id)));
-  if (G.expandedTheme) Object.values(G.points).forEach(p=> drawPoint(p, dim(p.it.id)));
-}
-function nodePos(id){
-  id = String(id);
-  if (id==='ROOT') return G.root;
-  if (id.startsWith('ST_')) return G.stagesById[id];
-  if (id.startsWith('TH_')) return G.themes.find(t=>t.id===id);
-  if (id.indexOf('|')>0){ // 关联目标主题 "unit|stage"
-    const [u,st]=id.split('|'); return G.themes.find(t=>t.unit===u && t.stage===st);
-  }
-  if (G.points[id]) return G.points[id];
-  return null;
-}
-function stageOfId(id){
-  id = String(id);
-  if (id==='ROOT') return null;
-  if (id.startsWith('ST_')) return id.slice(3);
-  if (id.startsWith('TH_')) return G.themes.find(t=>t.id===id).stage;
-  if (id.indexOf('|')>0) return id.split('|')[1];
-  if (G.points[id]) return G.points[id].th.stage;
-  return null;
-}
-function computeKeep(){
-  const keep = new Set();
-  keep.add('ROOT');
-  G.stages.forEach(s=> keep.add(s.id));
-  if (G.filterStage!=='all'){
-    // 仅保留该学段骨架 + 其展开考点 + 进阶目标
-    G.themes.forEach(th=>{ if (th.stage===G.filterStage) keep.add(th.id); });
-    if (G.expandedTheme && G.expandedTheme.stage===G.filterStage){
-      Object.values(G.points).forEach(p=> keep.add(String(p.it.id)));
-      G.links.forEach(l=> keep.add(l.toTheme+'|'+l.toStage));
+  const nodes = G.nodes.filter(n=>n.visible);
+  const kRep = 2600, kSpring = 0.02, damp = 0.85;
+  for (let i=0;i<nodes.length;i++){
+    for (let j=i+1;j<nodes.length;j++){
+      const a=nodes[i], b=nodes[j];
+      let dx=a.x-b.x, dy=a.y-b.y; let d2=dx*dx+dy*dy; if (d2<1) d2=1;
+      const d=Math.sqrt(d2); const f=kRep/d2;
+      const fx=dx/d*f, fy=dy/d*f;
+      a.vx+=fx; a.vy+=fy; b.vx-=fx; b.vy-=fy;
     }
-    return keep;
   }
-  // 无学段筛选：骨架全保留；展开/选中时额外保留该主题考点与进阶目标
-  G.themes.forEach(th=> keep.add(th.id));
-  if (G.expandedTheme){
-    keep.add(G.expandedTheme.id); keep.add('ST_'+G.expandedTheme.stage);
-    Object.values(G.points).forEach(p=> keep.add(String(p.it.id)));
-    G.links.forEach(l=> keep.add(l.toTheme+'|'+l.toStage));
-  }
-  return keep;
+  G.edges.forEach(e=>{
+    const a=G.byId[e.s], b=G.byId[e.t]; if (!a.visible||!b.visible) return;
+    let dx=b.x-a.x, dy=b.y-a.y; const d=Math.max(1,Math.sqrt(dx*dx+dy*dy));
+    let rl = 44; if (a.type==='root'||b.type==='root') rl=150; else if (a.type==='stage'||b.type==='stage') rl=110;
+    const f = kSpring*(d-rl);
+    const fx=dx/d*f, fy=dy/d*f;
+    a.vx+=fx; a.vy+=fy; b.vx-=fx; b.vy-=fy;
+  });
+  let energy = 0;
+  nodes.forEach(n=>{
+    const gr = n.type==='kp' ? 0.05 : 0.12;
+    n.vx += (n.anchor[0]-n.x)*gr; n.vy += (n.anchor[1]-n.y)*gr;
+    n.vx*=damp; n.vy*=damp; n.x+=n.vx; n.y+=n.vy;
+    energy += n.vx*n.vx + n.vy*n.vy;
+  });
+  draw();
+  if (!G) return;
+  if (G.dragNode || G.dragBG || energy > 0.4) G._raf = requestAnimationFrame(loop);
+  else G._raf = null;
 }
-function passFilter(th){ return G.filterStage==='all' || th.stage===G.filterStage; }
-
-function drawNode(n, isDim){
-  const g=document.createElementNS(SVG_NS,'g');
-  if (isDim) g.setAttribute('class','dim');
-  const c=document.createElementNS(SVG_NS,'circle');
-  c.setAttribute('cx',n.x); c.setAttribute('cy',n.y); c.setAttribute('r',n.r);
-  c.setAttribute('fill',n.color); c.setAttribute('fill-opacity', n.type==='root'?'1':'0.92');
-  c.setAttribute('stroke','#fff'); c.setAttribute('stroke-width','2');
-  g.appendChild(c);
-  const t=document.createElementNS(SVG_NS,'text');
-  t.setAttribute('class', n.type==='theme'?'node-label th':'node-label');
-  t.setAttribute('text-anchor','middle');
-  if (n.type==='root'){ t.setAttribute('y', n.y - n.r - 8); t.textContent=n.label; }
-  else if (n.type==='stage'){ t.setAttribute('y', n.y + n.r + 16); t.textContent=n.label; }
-  else { t.setAttribute('y', n.y + n.r + 14); t.textContent=n.name||n.label; }
-  g.appendChild(t);
-  g.style.cursor='pointer';
-  g.addEventListener('mouseenter', ()=>{ showTip(n); });
-  g.addEventListener('mousemove', moveTip);
-  g.addEventListener('mouseleave', hideTip);
-  g.addEventListener('click', ev=>{ ev.stopPropagation(); onNodeClick(n); });
-  SVG.appendChild(g);
-  n._g=g;
+function kick(){ if (G && !G._raf) G._raf = requestAnimationFrame(loop); }
+function draw(){
+  SVG.setAttribute('viewBox', `${G.view.x} ${G.view.y} ${G.view.w} ${G.view.h}`);
+  const showKpLabel = G.view.w < 950;
+  G.edges.forEach((e,i)=>{
+    const a=G.byId[e.s], b=G.byId[e.t]; const el=G.edgeEls[i];
+    const vis = a.visible && b.visible;
+    el.style.display = vis ? '' : 'none';
+    if (!vis) return;
+    el.setAttribute('x1',a.x); el.setAttribute('y1',a.y); el.setAttribute('x2',b.x); el.setAttribute('y2',b.y);
+    el.setAttribute('stroke', ncolor(b));
+  });
+  G.nodes.forEach(n=>{
+    const els=G.nodeEls[n.id];
+    els.g.style.display = n.visible ? '' : 'none';
+    if (!n.visible) return;
+    els.c.setAttribute('cx',n.x); els.c.setAttribute('cy',n.y);
+    els.t.setAttribute('x',n.x); els.t.setAttribute('y',n.y + (n.type==='kp'? n.r+11 : n.r+6));
+    if (n.type==='kp') els.t.style.display = showKpLabel ? '' : 'none';
+  });
 }
-function drawPoint(p, isDim){
-  const g=document.createElementNS(SVG_NS,'g');
-  if (isDim) g.setAttribute('class','dim');
-  const c=document.createElementNS(SVG_NS,'circle');
-  c.setAttribute('cx',p.x); c.setAttribute('cy',p.y); c.setAttribute('r',p.r);
-  c.setAttribute('fill',p.color); c.setAttribute('fill-opacity','0.95'); c.setAttribute('stroke','#fff'); c.setAttribute('stroke-width','1.5');
-  g.appendChild(c);
-  // 向外辐射的考点标签
-  const ang = Math.atan2(p.y - p.th.y, p.x - p.th.x);
-  const lx = p.x + Math.cos(ang)*14, ly = p.y + Math.sin(ang)*14;
-  const tl = document.createElementNS(SVG_NS,'text');
-  tl.setAttribute('class','node-label'); tl.setAttribute('text-anchor','middle');
-  tl.setAttribute('x', lx); tl.setAttribute('y', ly + (Math.sin(ang)<0? -4 : 11));
-  tl.textContent = clip(p.it.topic, 12);
-  g.appendChild(tl);
-  g.style.cursor='pointer';
-  g.addEventListener('mouseenter', ()=>{ showTip({label:p.it.topic, gradeLabel:p.it.gradeLabel}); });
-  g.addEventListener('mousemove', moveTip);
-  g.addEventListener('mouseleave', hideTip);
-  g.addEventListener('click', ev=>{ ev.stopPropagation(); selectPoint(p.it, false); });
-  SVG.appendChild(g);
-  p._g=g;
-}
-function onNodeClick(n){
-  if (n.type==='root'){ collapseAll(); deselectPanel(); }
-  else if (n.type==='stage'){ setFilter(n.stage); }
-  else if (n.type==='theme'){ expandTheme(n.id, true); }
+function ncolor(n){
+  if (n.type==='kp') return hexA(n.color, 0.35);
+  if (n.type==='unit') return hexA(n.color, 0.5);
+  return '#cbd5e1';
 }
 
-// ---------- 选择 / 面板 ----------
-function selectPoint(it, fit){
-  G.selected = { type:'kp', id:String(it.id) };
-  const th = G.themes.find(t=>t.unit===it.unit && t.stage===gradeToStage(it.grade_level));
-  if (th && (!G.expandedTheme || G.expandedTheme.id!==th.id)) expandTheme(th.id, false);
-  if (fit) fitViewOn(String(it.id));
-  render();
-  showKp(it);
-  highlightOutlineKp(it.id);
+// ---------- 高亮 ----------
+function hover(n){ G.hoverNode = n; applyHighlight(); }
+function clearHighlight(){ G.hoverNode=null; applyHighlight(); }
+function applyHighlight(){
+  const focus = G.hoverNode || G.selected;
+  let keep = null;
+  if (focus){
+    keep = new Set([focus.id, ...G.adj[focus.id]]);
+    if (G.selected){ // 选中时高亮祖先链路
+      keep = new Set([G.selected.id, ...G.ancestorsOf(G.selected), ...G.adj[G.selected.id]]);
+    } else if (G.hoverNode){
+      keep = new Set([G.hoverNode.id, ...G.adj[G.hoverNode.id]]);
+    }
+  }
+  G.nodes.forEach(m=>{ G.nodeEls[m.id].g.classList.toggle('dim', keep ? !keep.has(m.id) : false); });
+  G.edges.forEach((e,i)=>{
+    const hit = keep ? (keep.has(e.s) && keep.has(e.t)) : false;
+    G.edgeEls[i].classList.toggle('dimedge', keep ? !hit : false);
+  });
+}
+
+function selectNode(n){
+  G.selected = n;
+  applyHighlight();
+  if (n.type==='kp') showKp(n.data);
+  else if (n.type==='stage') showStage(n.stage);
+  else if (n.type==='unit') showUnit(n);
+  else showRoot(G.subject, countKp());
+}
+function deselect(){ G.selected=null; applyHighlight(); showRoot(G.subject, countKp()); }
+
+// ---------- 信息面板 ----------
+function countKp(){ return G.nodes.filter(n=>n.type==='kp').length; }
+function showRoot(subject, total){
+  document.getElementById('panel').innerHTML =
+    `<h2>${esc(subject)} · 知识图谱</h2>
+     <div class="stat">该学科共 <b>${total}</b> 个考点，覆盖小学 / 初中 / 高中。<br>点击任意考点查看应知应会内容。</div>
+     <div class="sec"><b>结构</b><pre>学科
+└─ 小学（1-6年级）└─ 学习主题 → 考点
+└─ 初中（7-9年级）└─ 学习主题 → 考点
+└─ 高中（10-12年级）└─ 学习主题 → 考点</pre></div>`;
+}
+function showStage(stage){
+  const kps = G.nodes.filter(n=>n.type==='kp'&&n.stage===stage).map(n=>n.data);
+  const units = [...new Set(kps.map(k=>k.unit))];
+  document.getElementById('panel').innerHTML =
+    `<h2>${stage} · ${kps.length} 个考点</h2>
+     <div class="sec"><b>学习主题（${units.length}）</b><div>${units.map(u=>`<span class="tag" style="background:${hueBg(u,0.14)};color:${hueColor(u)}">${esc(u)}</span>`).join('')}</div></div>
+     <div class="sec"><b>考点清单</b><pre>${kps.map(k=>'· '+esc(k.topic)).join('\n')}</pre></div>`;
+}
+function showUnit(u){
+  const kps = G.nodes.filter(n=>n.type==='kp'&&n.data.unit===u.label&&n.stage===u.stage).map(n=>n.data);
+  document.getElementById('panel').innerHTML =
+    `<h2 style="font-size:15px">${esc(u.label)}</h2>
+     <div class="stat">${u.stage} · ${kps.length} 个考点</div>
+     <div class="sec"><b>考点清单</b><pre>${kps.map(k=>'· '+esc(k.topic)).join('\n')}</pre></div>`;
 }
 function showKp(it){
-  const path=[G.subject, gradeToStage(it.grade_level), domainOf(it.unit), nameOf(it.unit)].filter(Boolean).join('  ›  ');
+  const path = [G.subject, gradeToStage(it.grade_level), it.unit].filter(Boolean).join('  ›  ');
   document.getElementById('panel').innerHTML =
     `<h2 style="font-size:16px">${esc(it.topic)}</h2>
      <div class="breadcrumb">📍 <b>${esc(path)}</b></div>
@@ -485,119 +383,150 @@ function showKp(it){
        <div class="stat" style="margin-top:6px">该知识点已有 ${it.approach_count||0} 条用户思路，可在「知识广场」查看、学习或分享。</div>
      </div>`;
 }
-function deselectPanel(){
-  document.getElementById('panel').innerHTML =
-    `<h2>${esc(G.subject)} · 知识图谱</h2>
-     <div class="stat">覆盖小学 / 初中 / 高中全部学习主题与考点。<br>点击任意学习主题展开其下考点，点击考点查看应知应会内容。</div>
-     <div class="sec"><b>结构</b><pre>学科
-└─ 小学（1-6年级）→ 学习主题 → 考点
-└─ 初中（7-9年级）→ 学习主题 → 考点
-└─ 高中（10-12年级）→ 学习主题 → 考点
-
-同知识领域的考点会自动连出
-跨年级「进阶 / 关联」虚线。</pre></div>`;
-}
-function highlightOutlineKp(id){
-  document.querySelectorAll('#treeRoot .node-row.kp').forEach(r=>r.classList.toggle('active', r.dataset.id===String(id)));
-}
-
-// ---------- 悬浮 ----------
-function showTip(n){ TOOLTIP.textContent = n.gradeLabel ? (n.gradeLabel+' · '+n.label) : (n.label||''); TOOLTIP.style.display='block'; }
-function moveTip(ev){ TOOLTIP.style.left=ev.clientX+'px'; TOOLTIP.style.top=ev.clientY+'px'; }
-function hideTip(){ TOOLTIP.style.display='none'; }
 
 // ---------- 筛选 + 搜索 ----------
-function setFilter(stage){
-  G.filterStage = (G.filterStage===stage) ? 'all' : stage;
-  document.querySelectorAll('#stageSeg button').forEach(b=>b.classList.toggle('on', b.dataset.s===G.filterStage));
-  // 展开该学段第一个主题，便于查看
-  if (G.filterStage!=='all'){
-    const th = G.themes.find(t=>t.stage===G.filterStage);
-    if (th) expandTheme(th.id, false);
-  } else if (G.expandedTheme){ /* keep */ }
-  render(); fitView();
+function applyFilter(){
+  const sf = G.stageFilter, q = (G.search||'').trim().toLowerCase();
+  G.nodes.forEach(n=>{
+    let vis = true;
+    if (sf!=='all' && n.type!=='root' && n.stage!==sf) vis=false;
+    if (q && n.type==='kp'){
+      const hay = (n.data.topic+' '+n.data.unit+' '+n.data.explanation).toLowerCase();
+      if (!hay.includes(q)) vis=false;
+    }
+    n.visible = vis;
+  });
+  G.edges.forEach(e=>{ const a=G.byId[e.s], b=G.byId[e.t]; e._hidden = !(a.visible&&b.visible); });
+  if (G.selected && !G.selected.visible) G.selected=null;
+  if (q){ centerFirstMatch(q); }
+  if (G._raf) cancelAnimationFrame(G._raf);
+  loop();
 }
-function doSearch(q){
-  G.search=q;
-  if (!q){ render(); return; }
-  const hit = G.items.find(i=>(i.topic+' '+i.unit+' '+i.explanation).toLowerCase().includes(q.toLowerCase()));
-  if (hit){
-    const th=G.themes.find(t=>t.unit===hit.unit && t.stage===gradeToStage(hit.grade_level));
-    if (th) expandTheme(th.id, false);
-    selectPoint(hit, true);
-  } else { render(); }
+function centerFirstMatch(q){
+  const hit = G.nodes.find(n=>n.type==='kp'&&n.visible&&(n.data.topic+' '+n.data.unit).toLowerCase().includes(q));
+  if (hit){ G.view.x = hit.x - G.view.w/2; G.view.y = hit.y - G.view.h/2; draw(); }
 }
 
-// ---------- 视图变换 ----------
+// ---------- 悬浮 tooltip ----------
+function showTip(n){
+  TOOLTIP.textContent = n.type==='kp' ? n.data.gradeLabel+' · '+n.label : n.label;
+  TOOLTIP.style.display='block';
+}
+function moveTip(ev){ TOOLTIP.style.left = ev.clientX+'px'; TOOLTIP.style.top = ev.clientY+'px'; }
+function hideTip(){ TOOLTIP.style.display='none'; }
+
+// ---------- 拖拽节点（鼠标）----------
+function startNodeDrag(ev, n){
+  ev.preventDefault(); ev.stopPropagation();
+  G.dragNode = n; n.x = toSvg(ev).x; n.y = toSvg(ev).y; n.vx=0; n.vy=0;
+  kick();
+  window.addEventListener('mousemove', onNodeDrag);
+  window.addEventListener('mouseup', endNodeDrag);
+}
+function onNodeDrag(ev){ if(!G.dragNode) return; const p=toSvg(ev); G.dragNode.x=p.x; G.dragNode.y=p.y; G.dragNode.vx=0; G.dragNode.vy=0; if(G._raf) cancelAnimationFrame(G._raf); loop(); }
+function endNodeDrag(){ G.dragNode=null; window.removeEventListener('mousemove',onNodeDrag); window.removeEventListener('mouseup',endNodeDrag); if(G._raf) cancelAnimationFrame(G._raf); loop(); }
+
+// ---------- 触控 ----------
+function startTouchNode(ev, n){
+  ev.preventDefault();
+  if (ev.touches.length===1){
+    G.dragNode = n; n.vx=0; n.vy=0;
+    const t=ev.touches[0]; dragTouch(n, t);
+    G._touchSingle = true;
+  }
+}
+function dragTouch(n, t){ const p=toSvg(t); n.x=p.x; n.y=p.y; n.vx=0; n.vy=0; if(G._raf) cancelAnimationFrame(G._raf); loop(); }
+SVG.addEventListener('touchstart', ev=>{
+  if (ev.touches.length===2){ // pinch
+    G._pinch = { d:touchDist(ev), w:G.view.w };
+    ev.preventDefault();
+  } else if (ev.touches.length===1 && (ev.target===SVG)){
+    G._touchBG = { sx:ev.touches[0].clientX, sy:ev.touches[0].clientY, vx:G.view.x, vy:G.view.y, moved:false };
+  }
+}, {passive:false});
+SVG.addEventListener('touchmove', ev=>{
+  if (ev.touches.length===2 && G._pinch){
+    ev.preventDefault();
+    const nd = touchDist(ev);
+    const nw = Math.min(VB.w*2, Math.max(320, G._pinch.w * (G._pinch.d/nd)));
+    const nh = nw*(VB.h/VB.w);
+    G.view.w=nw; G.view.h=nh; draw();
+  } else if (ev.touches.length===1){
+    if (G.dragNode){ dragTouch(G.dragNode, ev.touches[0]); ev.preventDefault(); }
+    else if (G._touchBG){
+      const k=VB.w/SVG.clientWidth;
+      G.view.x = G._touchBG.vx - (ev.touches[0].clientX-G._touchBG.sx)*k;
+      G.view.y = G._touchBG.vy - (ev.touches[0].clientY-G._touchBG.sy)*k;
+      G._touchBG.moved=true; draw(); ev.preventDefault();
+    }
+  }
+}, {passive:false});
+SVG.addEventListener('touchend', ev=>{
+  if (G.dragNode && !G._touchBG){ /* tap on node handled by click */ }
+  if (G._touchBG && !G._touchBG.moved){ deselect(); }
+  G.dragNode=null; G._touchBG=null; G._pinch=null;
+}, {passive:false});
+function touchDist(ev){ const a=ev.touches[0], b=ev.touches[1]; return Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY); }
+
+// ---------- 背景平移 + 缩放 ----------
+SVG.addEventListener('mousedown', ev=>{
+  if (ev.target!==SVG) return;
+  G.dragBG = { sx:ev.clientX, sy:ev.clientY, vx:G.view.x, vy:G.view.y, moved:false };
+  SVG.classList.add('grabbing');
+  window.addEventListener('mousemove', onBGDrag); window.addEventListener('mouseup', endBGDrag);
+});
+function onBGDrag(ev){ if(!G.dragBG) return; const k=VB.w/SVG.clientWidth; G.view.x=G.dragBG.vx-(ev.clientX-G.dragBG.sx)*k; G.view.y=G.dragBG.vy-(ev.clientY-G.dragBG.sy)*k; G.dragBG.moved=true; draw(); }
+function endBGDrag(){ if(G.dragBG && !G.dragBG.moved) deselect(); G.dragBG=null; SVG.classList.remove('grabbing'); window.removeEventListener('mousemove',onBGDrag); window.removeEventListener('mouseup',endBGDrag); }
+
+SVG.addEventListener('wheel', ev=>{
+  ev.preventDefault();
+  const p = toSvg(ev); const factor = ev.deltaY>0 ? 1.1 : 0.9;
+  const nw = Math.min(VB.w*2, Math.max(300, G.view.w*factor));
+  const nh = nw*(VB.h/VB.w);
+  G.view.x = p.x - (p.x-G.view.x)*(nw/G.view.w);
+  G.view.y = p.y - (p.y-G.view.y)*(nh/G.view.h);
+  G.view.w=nw; G.view.h=nh; draw();
+}, {passive:false});
+
 function toSvg(ev){
-  const r=SVG.getBoundingClientRect();
+  const r = SVG.getBoundingClientRect();
   return { x: G.view.x + (ev.clientX-r.left)/r.width*G.view.w, y: G.view.y + (ev.clientY-r.top)/r.height*G.view.h };
 }
 function fitView(){
   let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9;
-  const consider=(n)=>{ if(!n) return; minx=Math.min(minx,n.x-(n.r||10)); miny=Math.min(miny,n.y-(n.r||10)); maxx=Math.max(maxx,n.x+(n.r||10)); maxy=Math.max(maxy,n.y+(n.r||10)); };
-  consider(G.root); G.stages.forEach(consider);
-  if (G.expandedTheme){ consider(G.expandedTheme); Object.values(G.points).forEach(consider); }
-  else G.themes.forEach(consider);
+  G.nodes.filter(n=>n.visible).forEach(n=>{ minx=Math.min(minx,n.x-n.r); miny=Math.min(miny,n.y-n.r); maxx=Math.max(maxx,n.x+n.r); maxy=Math.max(maxy,n.y+n.r); });
   if (minx>maxx) return;
   const pad=70; G.view={ x:minx-pad, y:miny-pad, w:(maxx-minx)+pad*2, h:(maxy-miny)+pad*2 };
-  applyView();
+  draw();
 }
-function fitViewOn(id){
-  const p=G.points[id]; if(!p) return;
-  const pad=120; G.view={ x:p.x-pad, y:p.y-pad, w:pad*2, h:pad*2 }; applyView();
-}
-function applyView(){ SVG.setAttribute('viewBox', `${G.view.x} ${G.view.y} ${G.view.w} ${G.view.h}`); }
-
-SVG.addEventListener('mousedown', ev=>{
-  if (ev.target!==SVG) return;
-  G.dragBG={ sx:ev.clientX, sy:ev.clientY, vx:G.view.x, vy:G.view.y, moved:false };
-  SVG.classList.add('grabbing');
-  window.addEventListener('mousemove', onBGDrag); window.addEventListener('mouseup', endBGDrag);
-});
-function onBGDrag(ev){ if(!G.dragBG) return; const k=VB.w/SVG.clientWidth; G.view.x=G.dragBG.vx-(ev.clientX-G.dragBG.sx)*k; G.view.y=G.dragBG.vy-(ev.clientY-G.dragBG.sy)*k; G.dragBG.moved=true; applyView(); }
-function endBGDrag(){ if(G.dragBG && !G.dragBG.moved){ collapseAll(); deselectPanel(); } G.dragBG=null; SVG.classList.remove('grabbing'); window.removeEventListener('mousemove',onBGDrag); window.removeEventListener('mouseup',endBGDrag); }
-SVG.addEventListener('wheel', ev=>{
-  ev.preventDefault();
-  const p=toSvg(ev); const factor=ev.deltaY>0?1.12:0.89;
-  const nw=Math.min(VB.w*2.2, Math.max(280, G.view.w*factor));
-  const nh=nw*(VB.h/VB.w);
-  G.view.x=p.x-(p.x-G.view.x)*(nw/G.view.w);
-  G.view.y=p.y-(p.y-G.view.y)*(nh/G.view.h);
-  G.view.w=nw; G.view.h=nh; applyView();
-}, {passive:false});
-// 触控
-SVG.addEventListener('touchstart', ev=>{
-  if (ev.touches.length===2){ G._pinch={d:touchDist(ev), w:G.view.w}; ev.preventDefault(); }
-  else if (ev.touches.length===1 && ev.target===SVG){ G._touchBG={sx:ev.touches[0].clientX, sy:ev.touches[0].clientY, vx:G.view.x, vy:G.view.y, moved:false}; }
-}, {passive:false});
-SVG.addEventListener('touchmove', ev=>{
-  if (ev.touches.length===2 && G._pinch){ ev.preventDefault(); const nd=touchDist(ev); const nw=Math.min(VB.w*2.2, Math.max(280, G._pinch.w*(G._pinch.d/nd))); const nh=nw*(VB.h/VB.w); G.view.w=nw; G.view.h=nh; applyView(); }
-  else if (ev.touches.length===1 && G._touchBG){ const k=VB.w/SVG.clientWidth; G.view.x=G._touchBG.vx-(ev.touches[0].clientX-G._touchBG.sx)*k; G.view.y=G._touchBG.vy-(ev.touches[0].clientY-G._touchBG.sy)*k; G._touchBG.moved=true; applyView(); ev.preventDefault(); }
-}, {passive:false});
-SVG.addEventListener('touchend', ev=>{ if(G._touchBG && !G._touchBG.moved){ collapseAll(); deselectPanel(); } G._touchBG=null; G._pinch=null; }, {passive:false});
-function touchDist(ev){ const a=ev.touches[0], b=ev.touches[1]; return Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY); }
 
 // ---------- overlay ----------
 function showOverlay(kind, text){
-  OVERLAY.style.display='flex';
-  if (kind==='error'){ OVERLAY.innerHTML=`<div class="errbox">${esc(text)}<br><button class="btn primary" style="margin-top:10px" onclick="location.reload()">重试</button></div>`; }
-  else { OVERLAY.innerHTML=`<div class="spinner"></div><div id="overlayText">${esc(text)}</div>`; }
+  OVERLAY.style.display = 'flex';
+  if (kind==='error'){ OVERLAY.innerHTML = `<div class="errbox">${esc(text)}<br><button class="btn primary" style="margin-top:10px" onclick="location.reload()">重试</button></div>`; }
+  else { OVERLAY.innerHTML = `<div class="spinner"></div><div id="overlayText">${esc(text)}</div>`; }
 }
 function hideOverlay(){ OVERLAY.style.display='none'; }
 
 // ---------- 控件 ----------
-document.getElementById('stageSeg').addEventListener('click', e=>{ if(e.target.tagName!=='BUTTON') return; setFilter(e.target.dataset.s); });
-document.getElementById('search').addEventListener('input', e=> doSearch(e.target.value));
+document.getElementById('stageSeg').addEventListener('click', e=>{
+  if (e.target.tagName!=='BUTTON') return;
+  [...e.currentTarget.children].forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on');
+  G.stageFilter = e.target.dataset.s; applyFilter();
+});
+document.getElementById('search').addEventListener('input', e=>{ G.search=e.target.value; if(!G.search) clearHighlight(); applyFilter(); });
 document.getElementById('fitBtn').addEventListener('click', fitView);
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   document.getElementById('search').value=''; G.search='';
-  document.querySelectorAll('#stageSeg button').forEach(b=>b.classList.toggle('on', b.dataset.s==='all'));
-  G.filterStage='all'; collapseAll(); deselectPanel();
-  document.querySelectorAll('#treeRoot .node-row.kp').forEach(r=>r.classList.remove('active'));
-  if (G.themes.length) expandTheme(G.themes[0].id, false);
-  fitView();
+  document.getElementById('stageSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.s==='all'));
+  G.stageFilter='all'; deselect(); applyFilter(); fitView();
 });
+
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function hueColor(unit){ const h=hashHue(unit); return `hsl(${h},62%,52%)`; }
+function hueBg(unit,a){ const h=hashHue(unit); return `hsla(${h},62%,52%,${a})`; }
+function hexA(hsl, a){ const m = hsl.match(/(\d+),\s*(\d+)%,\s*(\d+)%/); return m ? `hsla(${m[1]},${m[2]}%,${m[3]}%,${a})` : hsl; }
 
 loadSubjects();
 </script>

@@ -85,4 +85,22 @@ module.exports = [
   { s:'英语', g:12, u:'语言技能·写作', t:'读后续写', e:'应知应会：根据所给短文与段首句续写，保持人物、情节、风格一致；合理想象、细节描写、运用动作与心理描写。', x:'例：依据段首句He slowly opened the door and...续写发现走失小狗的温馨场景，使用描写性语言。', k:'考点：情节连贯与描写能力；常考题型：读后续写；学业要求：能创造性续写。' },
   { s:'英语', g:12, u:'语言技能·写作', t:'概要写作', e:'应知应会：在不改变原意前提下用简洁语言概括要点；抓主题句、合并信息、删减细节；使用同义替换与衔接词。', x:'例：将三段文概括为“本文介绍垃圾分类的意义与做法”两到三句，保留核心要点。', k:'考点：信息提取与概括；常考题型：概要写作；学业要求：能写内容概要。' },
   { s:'英语', g:12, u:'语言技能·综合', t:'语法填空与语篇运用', e:'应知应会：在新高考语篇中综合考查时态语态、非谓语、从句、词形转换、虚词；有提示词变形、无提示词填连接或介词。', x:'例：填空 (surprise) Surprisingly, he won；无提示填 (what) what he said moved me；填 (where) where we met。', k:'考点：语篇语法综合；常考题型：语法填空；学业要求：能在语境中综合运用语法。' }
+,
+  { s:'undefined', g:3, u:'语言知识·字母', t:'26个字母认读写', e:'应知应会：能正确认读、书写26个英语字母（大小写），区分印刷体与书写体，掌握字母表顺序。', x:'例：按顺序默写Aa Bb Cc … Zz；注意Gg/Jj大小写区别。', k:'考点：字母认读书写；常考题型：默写、辨认。' },
+  { s:'undefined', g:3, u:'语言知识·词汇', t:'问候与介绍', e:'应知应会：会用Hello/Hi、Good morning/afternoon/evening问候，用What is your name? My name is…自我介绍，用Nice to meet you应答。', x:'例：—Hello, I am Tom. —Hi, I am Lucy. Nice to meet you.', k:'考点：问候介绍用语；常考题型：情景对话。' },
+  { s:'undefined', g:3, u:'语言知识·词汇', t:'颜色与数字（1-20）', e:'应知应会：认读红黄蓝绿等颜色词和1-20数字词，能问答颜色与数量（What color…? How many…?）。', x:'例：—What color is it? —It is red. —How many apples? —Five.', k:'考点：颜色数字词、问答；常考题型：选择、问答。' },
+  { s:'undefined', g:4, u:'语言知识·词汇', t:'家庭成员与朋友', e:'应知应会：认读father/mother/brother/sister/grandpa/grandma等家庭成员词，介绍家人（This is my…）。', x:'例：This is my father. He is tall. I love my family.', k:'考点：家庭成员词、介绍；常考题型：连线、说话。' },
+  { s:'undefined', g:4, u:'语言知识·词汇', t:'动物与食物', e:'应知应会：认读常见动物（cat/dog/panda/bird…）与食物饮料（rice/bread/egg/milk/water…）词，表达喜好（I like…）。', x:'例：I like pandas. They are cute. I like milk and bread.', k:'考点：动物食物词、喜好表达；常考题型：选择、填词。' },
+  { s:'undefined', g:4, u:'语言知识·词汇', t:'学校用品与身体部位', e:'应知应会：认读书包、书、笔等学习用品词和眼耳鼻嘴手等身体部位词，问答拥有与部位（What do you have? This is my…）。', x:'例：I have a new bag. Touch your nose/eyes/ears.', k:'考点：用品身体词；常考题型：听指、填空。' },
+  { s:'undefined', g:4, u:'语言知识·词汇', t:'天气与日常活动', e:'应知应会：认读sunny/rainy/windy/snowy等天气词，表达日常活动（I get up/go to school…），问答天气（How is the weather?）。', x:'例：—How is the weather? —It is sunny. I play outside.', k:'考点：天气词、活动表达；常考题型：问答、选择。' },
+  { s:'undefined', g:5, u:'语言知识·语法', t:'情态动词 can', e:'应知应会：会用can表示能力（I can swim.）和请求许可（Can I…?），否定can not/can’t，问答会做什么。', x:'例：—Can you dance? —Yes, I can. / No, I can’t.', k:'考点：can表能力、问答；常考题型：问答、填空。' },
+  { s:'undefined', g:5, u:'语言知识·词汇', t:'方位介词', e:'应知应会：认读in/on/under/behind/beside/in front of等方位介词，描述物品位置。', x:'例：The ball is under the desk. The cat is behind the door.', k:'考点：介词辨义、位置描述；常考题型：填空、看图。' },
+  { s:'undefined', g:5, u:'语言技能·阅读', t:'简单阅读与理解', e:'应知应会：能借助图片阅读简短对话、小短文，获取关键信息（人物、物品、数字），完成简单读后任务。', x:'例：读“Tom has a red ball.”判断Tom’s ball is red(T/F)。', k:'考点：信息获取、判断；常考题型：阅读判断、选择。' },
+  { s:'undefined', g:6, u:'语言知识·语法', t:'一般过去时初步', e:'应知应会：初步感知一般过去时表示过去发生的事，认识常见动词过去式（规则加ed、部分不规则），能读简单过去故事。', x:'例：I watched TV yesterday. He went to the park.', k:'考点：过去式形式、时间词；常考题型：填空、配对。' },
+  { s:'undefined', g:6, u:'语言知识·句型', t:'喜好与拥有（like/have）', e:'应知应会：用like/don’t like表达好恶，用have/has表示拥有，注意三单has，能写几句关于自己的话。', x:'例：I like music. He has a new bike. We don’t like rainy days.', k:'考点：like/have用法；常考题型：填空、写话。' },
+  { s:'undefined', g:6, u:'语言技能·写作', t:'简单写作（自我介绍、日记）', e:'应知应会：能写几句连贯的英语（自我介绍、My Day、My Favorite…），大小写、标点基本正确，意思清楚。', x:'例：My name is Li Hua. I am 12. I like reading. I go to school by bike.', k:'考点：连贯写句、格式；常考题型：小作文。' },
+  { s:'undefined', g:3, u:'语言知识·语音', t:'字母发音（元音字母）', e:'应知应会：感知元音字母a/e/i/o/u在开闭音节中的常见发音，能进行简单的拼读归类。', x:'例：a在cap中发/æ/，在cake中发/eɪ/；初步体会拼读规律。', k:'考点：元音发音、拼读；常考题型：辨音、归类。' },
+  { s:'undefined', g:4, u:'语言知识·词汇', t:'衣物与季节', e:'应知应会：认读衣物（shirt/dress/coat…）与四季（spring/summer/autumn/winter）词，表达穿着与季节活动。', x:'例：In summer I wear a T-shirt. I like autumn, it is cool.', k:'考点：衣物季节词；常考题型：选择、说话。' },
+  { s:'undefined', g:6, u:'语言知识·语法', t:'将来时（be going to）初步', e:'应知应会：初步感知be going to表示计划将要做的事，能说写简单打算（I am going to…）。', x:'例：I am going to visit my grandma this weekend.', k:'考点：将来打算表达；常考题型：填空、说话。' },
+  { s:'undefined', g:3, u:'语言技能·听说', t:'课堂指令与礼貌用语', e:'应知应会：听懂常见课堂指令（Stand up/Sit down/Open your book），会使用Thank you/Sorry/Excuse me等礼貌用语。', x:'例：—Thank you. —You are welcome. —May I come in? —Come in, please.', k:'考点：指令、礼貌语；常考题型：情景应答。' }
 ];
